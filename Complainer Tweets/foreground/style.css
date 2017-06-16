@@ -1,0 +1,12 @@
+.delete{
+	background-color: red;
+}
+.add{
+	background-color: green;
+}
+.save{
+	background-color: purple;
+}
+.cancel{
+	background-color: yellow;
+}
