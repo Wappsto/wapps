@@ -16,14 +16,11 @@ var printDebugInfo = function(theDebugInfo){
 
 var weatherDevice = getDevice({"manufacturer": "Open Weather Map"},{"message": "foreground data says, you need open weather map"})[0];
 var weatherPlace = weatherDevice.get("value").findWhere({"type":"place"});
-var weatherCountry = weatherDevice.get("value").findWhere({"type":"country"});
 var weatherTemp = weatherDevice.get("value").findWhere({"type": "Temperature"});
 
 var placeStateControl = weatherPlace.get("state").findWhere({"type": "Control"});
 var placeStateReport = weatherPlace.get("state").findWhere({"type": "Report"});
 
-var countryStateControl = weatherCountry.get("state").findWhere({"type": "Control"});
-var countryStateReport = weatherCountry.get("state").findWhere({"type": "Report"});
 
 var tempState = weatherTemp.get("state").findWhere({"type": "Report"});
 
@@ -34,11 +31,11 @@ var populateChosenCityReportState = function(){
 	var theTempState = tempState.get("data");
   	theTempState = Math.floor(theTempState - 273,15);
   	//another option: weatherPlace.get("state.0.data");
-  	theCityTarget.text(placeStateReport.get("data")+', '+countryStateReport.get("data")); 
+  	theCityTarget.text(placeStateReport.get("data")); 
   	theTempTarget.text(theTempState);
   	//printDebugInfo('report place: '+placeStateReport.get("data")+' , control place: '+placeStateControl.get("data"));
   	if (placeStateReport.get("data") != placeStateControl.get("data")){
-    	theCityTarget.text(placeStateReport.get("data")+', '+countryStateReport.get("data")+' ('+ placeStateControl.get("data")+' can\'t be found)');     
+    	theCityTarget.text(placeStateReport.get("data")+' ('+ placeStateControl.get("data")+' can\'t be found)');     
     }
   	printDebugInfo(''+JSON.stringify(weatherPlace));
 }
