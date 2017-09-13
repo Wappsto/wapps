@@ -1,7 +1,14 @@
+//Retrieve the Data model of this app
 var appData = getData({})[0];
+
+//Check if there's a config value in appData that's a valid set of Twitter credentials
 checkIfValid(appData && appData.get("config"));
+
+//Writes the values to the frontend 'saved data' section
 updateConfigFields();
 
+//Called when saving form in frontend
+debugger;
 var saveUserData = function(){
   var config = {
     consumerKey: $("#consumerKey").val(),
@@ -12,7 +19,9 @@ var saveUserData = function(){
   checkIfValid(config, true);
 }
 
+
 function checkIfValid(config, save){
+  
   var validProperties = function(config){
 	if(!config){
       return false;
@@ -26,6 +35,10 @@ function checkIfValid(config, save){
   if(!haveAllProperties){
     return false;
   }
+  
+  //formats and encodes data to be sent to Twitter
+  //then sends and callback returns success or failure
+  //if success, then save in Wappsto with saveConfig() function
   var consumer = {
     key: config.consumerKey,
     secret: config.consumerSecret
@@ -63,6 +76,7 @@ function checkIfValid(config, save){
   })
 }
 
+//saving Twitter configuration under appData
 function saveConfig(config){
   appData.save({
   	":id": appData.get(":id"),
@@ -82,6 +96,7 @@ function saveConfig(config){
   })
 }
 
+//clears form
 function clearFields(){
 	$("#consumerKey").val("");
     $("#consumerSecret").val("");
@@ -89,6 +104,7 @@ function clearFields(){
     $("#accessTokenSecret").val("");
 }
 
+//writes to 'saved data' area
 function updateConfigFields(){
   if(appData && appData.get("config")){
     var config = appData.get("config");

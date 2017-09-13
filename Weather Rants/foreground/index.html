@@ -1,0 +1,49 @@
+<link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+
+	<div class="grid-container">
+	
+	<div class="grid-x grid-padding-x">
+		<div class="large-12 cell">
+			<h1>Twitterrants Series</h1>
+          <h5><span id="twitterHandle">Twitter</span> comments on the weather</h5>
+          <p>NB: to test this wapp, you will need to go to app creator and into 'background data' for each supporting wapp (Weather Covnerter, Twitter Publisher) as well as for this Wapp, Weather Rants. This is because before the wapps are published and installed, they will not run in the background. </p>
+          <div id="debug">debug info</div>
+        </div>
+	</div> 	
+   
+      
+  	<hr /> 
+      
+    <div class="grid-x grid-padding-x">
+		<div class="medium-6 cell">
+          <input type="text" id="citychoice" name="citychoice" placeholder="Choose a new city?" />
+		</div>   
+      <div class="medium-2 cell">
+          <button onclick="saveCity()" class="button save">save city</button>
+		</div>  
+       <div class="medium-4 cell">
+         It's <span id="chosenCityTemp">X</span> &deg;C in <span id="cityReportValue"> --Your chosen city-- </span>
+		</div> 
+	</div>
+
+	<hr />
+
+	<div class="grid-x grid-padding-x">
+		<div class="large-12 cell">
+			<div id="container"></div>
+		</div>    
+	</div>
+      
+    
+	
+    <hr />   
+	
+	<div class="element grid-x grid-padding-x">
+		<div class="cell">
+			<button onclick="addField()" class="button add">add temp range</button>
+            <button onclick="saveFields()" class="button save">save twitter settings</button>
+            <button onclick="loadFields()" class="button cancel">cancel new temp range</button>
+		</div>
+	</div>
+		
+    </div>

@@ -1,12 +1,9 @@
 var appData = getData()[0];
 var network = getNetwork()[0];
 network.set("name", "Twitter Publisher");
+
 var initialize = function(){
-  	var promises = [];
-  	//check devices length
   	if(network.get("device").length == 0){
-      var publisherPromise = new $.Deferred();
-      promises.push(publisherPromise);
       var device = {
           "name": "twitter",
           "manufacturer": "twitter",
@@ -27,24 +24,21 @@ var initialize = function(){
       addNetwork(network, {
           wait: true,
           success: function(model){
-            publisherPromise.resolve();
+            addPostMessageListener();
             console.log("network save success");
           },
           error: function(){
-            publisherPromise.reject();
             console.log("network save error");
+            //error could be handled here
           }
         });
+    } else {
+    	addPostMessageListener();
     }
-  	return promises;
 }
-var promises = initialize();
-$.when.apply($, promises).then(function(){
-	//success
-  addPostMessageListener();
-}, function(error){
-	//error
-});
+
+initialize();
+
 
 function addPostMessageListener(){
   network.get("device").each(function(device){
@@ -59,6 +53,7 @@ function addPostMessageListener(){
     });
   });
 }
+
 
 function postMessage(message){
   var config = appData.get("config");

@@ -1,18 +1,40 @@
 load("jquery-2.1.1.js");
 load("underscore-1.8.3.js");
 
-var baseUrl = "/external/openweathermap/data/2.5";
-var appId = "77e9d318c61394bd371e812f1ccaa997";
-
-var models = getModelsPrototype();
+//varaible initialization
+//getData() gets application data to obtain Open Weather Map API key
+var data = getData()[0];
 var name = "Open Weather Map";
+var baseUrl = "/external/openweathermap/data/2.5";
+var appId;
+
+//getModelsPrototype() is Wappsto function to create basic data structure
+var models = getModelsPrototype();
+
+//Waiting for the API key. Once its there the rest of the code is run.
+//getNetwork() retrieves all of the app's Networks 
+//If there is already a Device in this Network, then listen to if the stream sends a state change
+//Else createNetwork(), call it 'Open Weather Map'. Note that this modifies the default Network model.
 var network = getNetwork()[0];
-if(network.get("device").length == 0){
-  createNetwork(name);
-} else {
-  addValueListeners(network);
+var run = function(){
+  appId = data.get("apiKey");
+  if(data.get("apiKey")){
+    if(network.get("device").length == 0){
+      createNetwork(name);
+    } else {
+      addValueListeners(network);
+    }
+  }
 }
 
+data.on("change", function(){
+  	run();
+})
+
+run();
+
+//Calls open weather map API and retrieves a JSON object 
+//then puts that format into Wappsto data model 
 function createNetwork(name){
   network.set("name", name);
   var place = "Berlin";
@@ -26,13 +48,19 @@ function createNetwork(name){
     .done(function(data){
     var weather = data["main"];
     var device = createDevice();
-    var placeValue = createValue("place", place, "w", "Control");
+    var placeValue = createValue("place", place, "rw", "Control");
+
+    var reportPlaceState = createState("Report", place);
+    placeValue.get("state").add(reportPlaceState);
+
     device.get("value").push(placeValue);
+
     network.get("device").push(device);
     _.each(weather, function(val, name){
       var value = createValue(name, val, "r", "Report", true);
       device.get("value").push(value);
     });
+    //if network exists, update, or else creates a network
     addNetwork(network, {
       success: function(){
         addValueListeners(network);
@@ -48,6 +76,7 @@ function createNetwork(name){
   });
 }
 
+//creates a device specifically for open weather map
 function createDevice(){
   var device = new models["Device"]();
   device.set("name", "weather main");
@@ -56,9 +85,10 @@ function createDevice(){
   return device;
 }
 
+//creates value for open weather map Device, used to create value for each weather attribute from open weather map
 function createValue(name, val, permission, stateType, typeNumber){
   var value = new models["Value"]();
-  var type = (name == "temp") ? "Temperature" : name;
+  var type = (name == "temp") ? "Temperature" : name; 
   value.set("name", name);
   value.set("type", type);
   if(typeNumber){
@@ -66,12 +96,13 @@ function createValue(name, val, permission, stateType, typeNumber){
   } else {
     value.set("string", {max: 99});
   }
-  value.set("permission", permission);
+  value.set("permission", permission); 
   var reportState = createState(stateType, val);
   value.get("state").push(reportState);
   return value;
 }
 
+//creates the States for each Value created under the Device for open weather map
 function createState(dataType, data){
   var state = new models["State"]();
   state.set("type", dataType);
@@ -81,20 +112,30 @@ function createState(dataType, data){
   return state;
 }
 
+//if the place changes, send new request to Open Weather Map
 function addValueListeners(network){
   var value = network.get("device").findWhere({"name": "weather main"}).get("value").findWhere({name: "place"});
-  var controlState = value.get("state").first();
+  var controlState = value.get("state").findWhere({"type":"Control"});
   if(controlState){
+    controlState.off("stream:data", null, "weather converter");
     controlState.on("stream:data", function(data){
-      data = data.data;
-      sendRequest(network, data);
-    });
+      if(data.data != controlState.get("data")){
+        data = data.data;
+      	sendRequest(network, data);
+      }
+    }, "weather converter");
   }
 }
 
-function sendRequest(network, place){
-  console.log("sending "+place);
 
+function sendRequest(network, place){
+      var device = network.get("device").findWhere({"name": "weather main"});
+      var placeValueForModification = device.get("value").findWhere({"type":"place"});
+      var reportPlaceState = placeValueForModification.get("state").findWhere({"type": "Report"});
+      var controlPlaceState = placeValueForModification.get("state").findWhere({"type": "Control"});
+  
+  console.log("sending city: "+place);
+   reportPlaceState.save({"status": "Pending"}, {wait: true});
   $.ajax({url: baseUrl+"/weather?q="+place+"&APPID="+ appId,
           method: "GET",
           headers: {
@@ -103,8 +144,19 @@ function sendRequest(network, place){
             'X-Session': sessionID }
          })
     .done(function(data){
-    var device = network.get("device").findWhere({"name": "weather main"});
+    
+    
     if(device){
+
+      var reportPlaceFromOWM = data["name"];
+      
+      var timestamp = new Date().toISOString();
+      reportPlaceState.set({data: reportPlaceFromOWM, type: "Report", timestamp: timestamp+""});
+      controlPlaceState.set({data: place, type: "Control", timestamp: timestamp+""});
+      
+      reportPlaceState.set("status", "Send");
+      
+      
       _.each(data["main"], function(value, key){
         var valueModel = device.get("value").findWhere({"name": key});
         if(valueModel){
@@ -116,11 +168,17 @@ function sendRequest(network, place){
         }
       });
       device.save({}, {wait: true, error: function(){
+        //set placeValue status to error
+        //placeValueForModification.set("status", "error");
         console.log("failed to save device info");
       }})
     }
   })
     .fail(function(error){
+   	var device = network.get("device").findWhere({"name": "weather main"});
+    var placeStateForModification = device.get("value").findWhere({"type":"place"}).get("state").findWhere({"type": "Report"});
+    placeStateForModification.set("status", "Failed");
+    placeStateForModification.save();
     console.log("failed to get weather of "+place);
   });
 }

@@ -1,5 +1,5 @@
-var weatherDevice = getDevice({"manufacturer": "Open Weather Map"})[0];
-var twitterDevice = getDevice({"manufacturer": "twitter"})[0];
+var weatherDevice = getDevice({"manufacturer": "Open Weather Map"},{"message":"background says, open weather map converter app necessary"})[0];
+var twitterDevice = getDevice({"manufacturer": "twitter"},{"message":"background says, twitter converter app necessary"})[0];
 var appData = getData({})[0];
 
 var weatherPlace = weatherDevice.get("value").findWhere({"type": "place"});

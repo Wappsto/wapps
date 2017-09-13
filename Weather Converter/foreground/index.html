@@ -1,0 +1,37 @@
+<article>
+  <header>
+    <h1>OpenWeatherMap Converter</h1>
+    <p>This application converts current weather data for a specified location.</p>
+  </header>
+  <section>
+    <header>
+      <h2>API key</h2>
+      <p><span style="color:red">IMPORTANT</span>
+        <br>
+        <br>
+        To get access to weather API you need an API key that you can get <a href="http://openweathermap.org/appid" target="_blank">here</a>.</p>
+    </header>
+    <label>Enter API key to add new or modify existing</label>
+    <input type="text" name="apikey" id="apikey">
+    <button onclick="saveUserData()">Save</button>
+    <div class="statusPanel" id="status" style="display:none">
+      <p id="statusMessage"></p>
+    </div>
+    <hr>
+    <label>Currently used API key</label>
+    <div class="apikey" id="configApiKey"></div>
+  </section>
+  <section>
+    <header>
+      <h2>Values</h2>
+      <p>List of currently converted values:</p>
+    </header>
+    <ul>
+      <li><strong>temp</strong> - Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</li>
+      <li><strong>pressure</strong> - Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa</li>
+      <li><strong>humidity</strong> - Humidity, %</li>
+      <li><strong>temp_min</strong> - Minimum temperature at the moment. This is deviation from current temp that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</li>
+      <li><strong>temp_max</strong> - Maximum temperature at the moment. This is deviation from current temp that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</li>
+    </ul>
+  </section>
+</article>
