@@ -8,7 +8,7 @@ checkIfValid(appData && appData.get("config"));
 updateConfigFields();
 
 //Called when saving form in frontend
-debugger;
+
 var saveUserData = function(){
   var config = {
     consumerKey: $("#consumerKey").val(),
