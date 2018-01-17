@@ -4,6 +4,7 @@
 //
 // // Global vars
 const http = require('http');
+var fstream = require('fstream');
 var fs = require('fs-extra');
 var request = require('request');
 var unzip = require('unzip');
@@ -14,6 +15,10 @@ var questions = require('questions');
 var xsession;
 var bareboneversion;
 var output = "downloadedfile.zip";
+var downloadedapp = "downloadedapp.zip";
+var items = [];
+var rightanswer;
+var itemnumber = 0;
 const targetip = '10.10.2.21';
 //
 //
@@ -24,20 +29,206 @@ var login = {
 	":type": "urn:seluxit:xml:wappsto:session-1.2"
 }
 
-new Promise((resolve, reject) => {
-    console.log('Let\'s login: ');
-		questions.askMany({
-    email: { info:'User email: ', required: true},
-    password: { info:'User password: ', required: true},
-}, function(result){
-    console.log(result);
-		login.username = result.email; //uncomment these lines for proper login
-		login.password = result.password;
-		resolve();
+requestLoginInput()
+
+.catch((err) => {
+	console.log(err);
+	console.log('Error came up.');
 })
 
-})
-.then(() => {
+function displayApps(){
+		console.log('Loading your apps. Choose what you would like to open: ');
+		//code for getting and displaying all the apps
+		request({
+				url: "http://" + targetip +":9292/services/application?expand=1",
+				method: "GET",
+				json: true,
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'X-Session': xsession
+			}
+		},  function (error, response, body){
+
+					response.body.forEach(function (bodyobj, appIndex){
+						console.log("Application: "+appIndex+" ----------------------------------");
+						bodyobj.version.forEach(function(versionobj){
+							console.log("[" + itemnumber + "] " +versionobj['name'] + " --- version: " + versionobj['version_app'] + " --- status: " + versionobj['status']);
+							items.push(versionobj);
+							itemnumber++;
+						})
+					})
+					askUserInput();
+		});
+}
+
+function downloadApp(){
+	return new Promise((resolve, reject) => {
+			console.log('Downloading your files');
+			request({
+							url: "http://" + targetip +":3005/file/" + items[rightanswer][':id'],
+							method: "GET",
+							encoding: null,
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json',
+								'X-Session': xsession
+						}
+					},  function (error, response, body){
+						if(error){
+							console.log("Failed to download files. Try again.");
+							reject();
+						}
+						fs.writeFile(downloadedapp, body, function(err) {
+							console.log("App Downloaded!");
+							// fs.createReadStream(downloadedapp).pipe(unzip.Extract({ path: './yourApp/' }))
+							var x = fs.createReadStream(downloadedapp);
+							x.pipe(unzip.Extract({ path: './yourApp/' }))
+							.on('close', function(){
+								console.log("App extracted to /yourApp");
+								fs.removeSync(downloadedapp);
+								resolve();
+							})
+							})
+						});
+					});
+}
+
+
+function isInt(value) {
+  return !isNaN(value) &&
+         parseInt(Number(value)) == value &&
+         !isNaN(parseInt(value, 10));
+}
+
+function askUserInput(){
+	questions.askMany({
+		answer: {info:'Introduce the number correspondingly: ', required: true},
+		}, function(result){
+			rightanswer = result.answer;
+			if (isInt(rightanswer) && rightanswer < itemnumber+1){
+				console.log("You selected " + "["+rightanswer+"] "+ items[rightanswer]['name']);
+				downloadApp();
+			}
+			else {
+				console.log("Select something in range");
+				askUserInput();
+			}
+		})
+}
+
+
+function generateApp(){
+	return new Promise((resolve, reject) => {
+		if (fs.existsSync('App')) {
+				console.log('App folder already exists.');
+		} else
+		{
+			fs.mkdirSync('App');
+			console.log('App folder created');
+		}
+		if (fs.existsSync('App/main.js')) {
+				console.log('main file inside /App already exists.');
+		} else
+		{
+			var stream = fs.createWriteStream("App/main.js");
+			stream.once('open', function(fd) {
+			stream.write("console.log(\"Hello there!\");\n");
+			stream.write("console.log(\"This is your new app\");\n");
+			stream.write("console.log(\"Have fun developing!\");\n");
+			stream.end();
+			});
+		}
+		resolve();
+	})
+	.then(() => {
+		displayApps();
+	})
+}
+
+function prepareForeground(){
+	return new Promise((resolve, reject) => {
+		fs.moveSync('unzipped/foreground', 'foreground', {overwrite:true})
+		console.log('Files Moved!');
+		fs.removeSync('unzipped');
+		console.log('temp folder deleted');
+		console.log('preparing foreground folder - installing npm');
+		cmd.run('npm install --prefix ./foreground');
+		resolve();
+		})
+		.then(()=>{
+			generateApp()
+		}, (err) => {
+			console.log("Something went wrong moving files. Try again. If this fails again, try manually deleting the foreground folder and run again")
+		})
+}
+
+function getBarebone(){
+	return new Promise((resolve, reject) => {
+			console.log('Getting Latest Files');
+			request({
+							url: "http://" + targetip +":3005/file/" + bareboneversion,
+							method: "GET",
+							encoding: null,
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json',
+								'X-Session': xsession
+						}
+					},  function (error, response, body){
+						if(error){
+							console.log("Failed to download files. Try again.");
+							reject();
+						}
+						fs.writeFile(output, body, function(err) {
+							console.log("Files Downloaded!");
+							var x = fs.createReadStream(output);
+							x.pipe(unzip.Extract({ path: './unzipped/' }))
+							.on('close', function(){
+								console.log("Files extracted to /unzipped");
+								fs.removeSync(output);
+								console.log('zip file deleted');
+								resolve();
+							})
+						});
+					});
+				})
+				.then(()=>{
+						prepareForeground()
+				}, (err) => {
+					console.log("Something went wrong downloading barebone. Try again.")
+				})
+}
+
+function getBareboneVersion(){
+	return new Promise((resolve, reject) => {
+			console.log('Logged in, getting the barebone file version...');
+			request({
+									url: "http://" + targetip +":9292/services/search?request=Barebone-Docker",
+									method: "GET",
+									json: true,
+									headers: {
+										'Accept': 'application/json',
+										'Content-Type': 'application/json',
+										'X-Session': xsession
+								}
+							},  function (error, response, body){
+									if(!response.body.version) {
+										return console.log("Failed to get latest version of Barebone. Try again.");
+										reject();
+									}
+										bareboneversion = response.body.version.slice(-1).pop()[':id'];
+										console.log('Newest barebone version: ' + bareboneversion);
+										resolve();
+								});
+					})
+					.then(() => {
+						getBarebone()
+					})
+}
+
+
+function postLogin(){
 	return new Promise((resolve, reject) => {
 	    console.log('Logging in..');
 	    request({
@@ -59,130 +250,28 @@ new Promise((resolve, reject) => {
 	           console.log('Your X-Session: ' +xsession);
 	           resolve();
 	         });
-
 	})
 	.then(() => {
-	  return new Promise((resolve, reject) => {
-	      console.log('Logged in, getting the file version...');
-	      request({
-	                  url: "http://" + targetip +":9292/services/search?request=Barebone-Docker",
-	                  method: "GET",
-	                  json: true,
-	                  headers: {
-	                    'Accept': 'application/json',
-	                    'Content-Type': 'application/json',
-	                    'X-Session': xsession
-	                }
-	              },  function (error, response, body){
-										if(!response.body.version) {
-									 		return console.log("Failed to get latest version of Barebone. Try again.");
-									 		reject();
-									 	}
-											bareboneversion = response.body.version.slice(-1).pop()[':id'];
-											console.log('Newest version: ' + response.body.version.slice(-1).pop()[':id']);
-	                    resolve();
-	                });
-	          })
-	        })
-					.then(() => {
-					  return new Promise((resolve, reject) => {
-					      console.log('Getting Latest Files');
-					      request({
-					              url: "http://" + targetip +":3005/file/" + bareboneversion,
-					              method: "GET",
-					              encoding: null,
-					              headers: {
-					                'Accept': 'application/json',
-					                'Content-Type': 'application/json',
-					                'X-Session': xsession
-					            }
-					          },  function (error, response, body){
-											if(error){
-												console.log("Failed to download files. Try again.");
-												reject();
-											}
-					            fs.writeFile(output, body, function(err) {
-					              console.log("Files Downloaded!");
-					              fs.createReadStream(output).pipe(unzip.Extract({ path: './unzipped/' }))
-												resolve();
-												console.log("Files extracted to /unzipped");
-											});
-					            });
-					          });
-					  })
-					.then(()=>{
-						console.log("Cleaning up and preparing environment...");
-						setTimeout(function(){
-							return new Promise((resolve, reject) => {
-								fs.moveSync('unzipped/foreground', 'foreground', err => {
-								if(err) console.log('Files already exist. Overwriting...');
-							}, { overwrite: true })
-								console.log('Files Moved!');
-
-									fs.remove('unzipped', function(err){
-										if(err) return console.error(err);
-										console.log('temp folder deleted');
-									})
-									fs.remove(output, function(err){
-										if(err) return console.error(err);
-										console.log('zip file deleted');
-									})
-
-									console.log('preparing foreground folder - installing npm');
-									cmd.run('npm install --prefix ./foreground');
-									resolve();
-
-								})
-								.catch((err) => {
-									fs.remove('unzipped', function(err){
-										if(err) return console.error(err);
-										console.log('temp folder deleted');
-									})
-									fs.remove(output, function(err){
-										if(err) return console.error(err);
-										console.log('zip file deleted');
-									})
-
-									console.log('preparing foreground folder - installing npm');
-									cmd.run('npm install --prefix ./foreground');
-								})
-
-						}, 2000 );
-
-
-						})
-						.then(()=>{
-							if (fs.existsSync('App')) {
-    							console.log('App folder already exists.');
-							} else
-							{
-								fs.mkdirSync('App');
-								console.log('App folder created');
-							}
-							if (fs.existsSync('App/main.js')) {
-									console.log('main file inside /App already exists.');
-							} else
-							{
-								var stream = fs.createWriteStream("App/main.js");
-								stream.once('open', function(fd) {
-		  					stream.write("console.log(\"Hello there!\");\n");
-		  					stream.write("console.log(\"This is your new app\");\n");
-								stream.write("console.log(\"Have fun developing!\");\n");
-		  					stream.end();
-		});
-							}
+		getBareboneVersion()
+	})
+}
 
 
 
-						})
-
-
-})
-
-
-
-
-				.catch((err) => {
-				  console.log(err);
-				  console.log('Error came up.');
-				})
+function requestLoginInput(){
+	return new Promise((resolve, reject) => {
+	    console.log('Let\'s login: ');
+			questions.askMany({
+	    email: { info:'User email: ', required: true},
+	    password: { info:'User password: ', required: true},
+	}, function(result){
+	    console.log(result);
+			login.username = result.email; //uncomment these lines for proper login
+			login.password = result.password; //comment them to get login from hardcodded login json
+			resolve();
+	})
+	})
+	.then(() => {
+		postLogin()
+	})
+}
