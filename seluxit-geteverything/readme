@@ -4,4 +4,4 @@ Instructions not yet done, but in short:
 1. npm install (in this folder)
 2. node thecallscript.js (follow instructions)
 3. Build your app in App folder or edit your downloaded app. 
-
+4. in order to enable the proper login system, uncomment lines 789 and 790.
