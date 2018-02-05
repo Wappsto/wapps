@@ -1,0 +1,113 @@
+{
+  "name":"Open Weather Map",
+  "device":[
+    {
+      "description":"",
+      "name":"Current Weather",
+      "manufacturer":"Open Weather Map",
+      "communication":"always",
+      "value":[
+        {
+          "param":"name",
+          "name":"city",
+          "type":"location",
+          "permission":"rw",
+          "dataType":"string",
+          "description":"City name"
+        },
+        {
+          "param":"sys.country",
+          "name":"country code",
+          "type":"location",
+          "permission":"r",
+          "dataType":"string",
+          "encoding":"ISO 3166",
+          "description":"Country code"
+        },
+        {
+          "param":"main.temp",
+          "name":"temperature",
+          "type":"temp",
+          "permission":"r",
+          "dataType":"number",
+          "unit":"K",
+          "description":"Temperature"
+        },
+        {
+          "param":"main.humidity",
+          "name":"humidity",
+          "type":"humidity",
+          "permission":"r",
+          "dataType":"number",
+          "min":"0",
+          "max":"100",
+          "step":"1",
+          "unit":"%",
+          "description":"Humidity"
+        },
+        {
+          "param":"main.pressure",
+          "name":"pressure",
+          "permission":"r",
+          "dataType":"number",
+          "unit":"hPa",
+          "description":"Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data)"
+        },
+        {
+          "param":"wind.speed",
+          "name":"wind speed",
+          "type":"speed",
+          "permission":"r",
+          "dataType":"number",
+          "unit":"m/s",
+          "description":"Wind speed"
+        },
+        {
+          "param":"wind.deg",
+          "name":"wind direction",
+          "type":"deg",
+          "permission":"r",
+          "dataType":"number",
+          "unit":"deg",
+          "description":"Wind direction, degrees (meteorological)"
+        },
+        {
+          "param":"clouds.all",
+          "name":"cloudiness",
+          "type":"clouds",
+          "permission":"r",
+          "dataType":"number",
+          "unit":"%",
+          "description":"Cloudiness"
+        },
+        {
+          "param":"sys.sunrise",
+          "name":"sunrise",
+          "type":"timestamp",
+          "permission":"r",
+          "dataType":"string",
+          "encoding":"UTC",
+          "description":"Sunrise time"
+        },
+        {
+          "param":"sys.sunset",
+          "name":"sunset",
+          "type":"timestamp",
+          "permission":"r",
+          "dataType":"string",
+          "encoding":"UTC",
+          "description":"Sunset time"
+        },
+        {
+          "param":"dt",
+          "name":"last updated",
+          "type":"timestamp",
+          "permission":"r",
+          "dataType":"string",
+          "encoding":"UTC",
+          "description":"Time of data calculation"
+        }
+      ]
+    }
+  ]
+}
