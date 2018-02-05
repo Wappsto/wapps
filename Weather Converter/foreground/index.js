@@ -1,43 +1,36 @@
-load("jquery-2.1.1.js");
-load("style.css");
+load("jquery-2.1.1.js"); // loading jQuery lib
+load("underscore-1.8.3.js"); // loading underscore lib
+load("style.css"); // loading stylesheets
+load("apiKey.js"); // loading api key handling functions
 
-var data = getData()[0];
+var networkInfo = $.parseJSON(getFileContent("networkInfo.json")), // network info oject provides names and value descriptions, which are used in model creation and UI
+	network = getNetwork()[0],
+	statusPanel = $("#status"),
+	statusMessage = $("#statusMessage"),
+    valueListElm = $("#integratedValues"),
+    valueList = createValueDescription;
 
-var saveUserData = function() {
-  var apiKey = $("#apikey").val();
-  data.save({
-    "apiKey": apiKey
-  }, {
-    wait: true,
-    success: function() {
-      updateApiKey(apiKey);
-      updateStatusMessage("success");
-    },
-    error: function() {
-      updateStatusMessage("error");
-    }
-  });
-};
+load("currentWeather.js"); // loading current weather listeners.
 
-var updateStatusMessage = function(status) {
-  var statusPanel = $("#status");
-  var statusMessage = $("#statusMessage");
+$("#networkName").text(networkInfo.name); // setting network name
+valueListElm.html(valueList); // creating value list based on networkInfo object
 
-  statusPanel.show().addClass(status);
-
-  if (status === "success") {
-    statusMessage.text("API Key was updated");
-  } else {
-    statusMessage.text("An error occurred.");
-  }
-
+function updateStatusMessage(status) {
+  statusPanel.show().addClass(status.type);
+  statusMessage.text(status.message);
   setTimeout(function(){ statusPanel.hide(); }, 4000);
-};
+}
 
-var updateApiKey = function(key) {
-  $("#configApiKey").text(key);
-};
-
-if (data.get("apiKey")) {
-  updateApiKey(data.get("apiKey"));
+function createValueDescription(){
+  var list = "",
+      unit = "";
+  $.each(networkInfo.device[0].value, function(key, value) {
+    if(value.unit){
+      unit = "(" + value.unit + ")";
+    } else if (value.encoding){
+      unit = "(" + value.encoding + ")";
+    }
+    list += "<li><strong>" + value.name + "</strong> " + unit + " - " + value.description + "</li>";
+  });
+  return list;
 }

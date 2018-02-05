@@ -9,7 +9,7 @@ var network = getNetwork({
   "name": pumpkinConfig.network.name
 }, {
   "message": "Trick or treat?"
-})[0]; 
+})[0]; // 'message' in the object will be shown to the user when requesting Network
 
 //load pupmkin component functionality
 load("eyes.js");
