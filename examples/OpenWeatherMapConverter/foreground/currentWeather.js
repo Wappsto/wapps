@@ -28,7 +28,7 @@ function setCurrentLocation(){
 function currentValueList(){
   var list = "",
       data = "";
-  _.each(device.get("value").models, function(value) {
+  $.each(device.get("value").models, function(key, value) {
     var unit = "";
     if(value.get("number")){
       unit = value.get("number").unit;
@@ -43,4 +43,3 @@ function currentValueList(){
   });
   return list;
 }
-

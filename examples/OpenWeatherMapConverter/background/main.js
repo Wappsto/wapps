@@ -1,7 +1,7 @@
 load("jquery-2.1.1.js");
 //varaible initialization
-
-var data = getData()[0]; //getData() gets application data to obtain Open Weather Map API key
+//getData() gets application data to obtain Open Weather Map API key
+var data = getData()[0];
 var baseUrl = "/external/openweathermap/data/2.5";
 var appId, timer;
 var networkInfo = $.parseJSON(getFileContent("networkInfo.json")); //network info oject provides names and value descriptions, which are used in model creation and UI
@@ -16,7 +16,7 @@ var run = function() {
   if(data.get("apiKey")){
     appId = data.get("apiKey");
   } else{
-  //  appId = "Insert your apiKey (appID) here";
+    appId = "insert appId here";
   }
   if(network.get("device").length == 0) {
     createNetwork();
