@@ -1,0 +1,58 @@
+body {
+  background-color: #444;
+  color: #ddd;
+  font-family: sans-serif;
+  padding: 20px;
+}
+h1, h2, a {
+  color: orange;
+}
+h3, h4, .apikey{
+  color:#ffddaa;
+}
+
+section{
+  padding: 0px 20px 20px 20px;
+  margin: 10px 0px 20px 0px;
+}
+section:not(:last-child){
+  border-bottom: 1px solid #222;
+  box-shadow: 0px 1px 0px 0px #666;
+}
+
+label {
+  display: block;
+  font-size:80%;
+}
+
+input {
+  display: block;
+  padding: 3px;
+}
+
+button, .button{
+  margin: 10px 0;
+  padding: 4px 15px;
+  border: 1px solid white;
+  background-color: #444;
+  color: white;
+}
+
+button:hover, .button:hover{
+  background-color: orange;
+}
+
+.callout{
+  padding: 5px 15px;
+  border:1px solid orange;
+  color:orange;
+}
+.callout.error{
+  border-color: red;
+  color:red;
+}
+.callout.success{
+  border-color: lime;
+  color:lime;
+}
+
