@@ -27,7 +27,7 @@ var token = data.get("token") && data.get("token")["access_token"];
 var refresh = data.get("refresh");
 
 //** baseUrl is the SERVICE that you are going to use for external requests (proxy thing, ask Tsvetomir) **
-var baseUrl = "/external/meethue/";
+var baseUrl = "https://api.meethue.com/";
 var hueHeader = {
   'Content-type': 'application/json',
   'Accept': 'application/json',
