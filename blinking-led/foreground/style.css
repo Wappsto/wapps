@@ -1,0 +1,29 @@
+body {
+  padding: 2em;
+  text-align: center;
+  background: #cccccc;
+  font-family: sans-serif;
+  font-size: 0.9em;
+}
+button {
+  padding: 1em;
+  margin: 2em auto;
+  width: 50%;
+  display: block;
+}
+
+#reportValue{
+  padding:1em;
+}
+
+.on {
+  background: darkSeaGreen;
+}
+
+.off {
+  background: lightCoral;
+}
+
+.blink {
+  background: lightSlateGrey;
+}
