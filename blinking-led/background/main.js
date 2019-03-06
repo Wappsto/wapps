@@ -1,52 +1,46 @@
 /* Note that some of this code is repeated from the foreground js file. Common instantiation of objects between the foreground and background is on the road map. */
 const Wappsto = require('wapp-api');
 let wappsto = new Wappsto();
-
 let wappstoConsole = require("wapp-api/console");
 wappstoConsole.start();
-
 let blinking,
     data,
-    wStream,
+    led,
     ledControlState;
 
-getStream();
-getLED();
-getData();
 
-function getLED(){
-  wappsto.functions.get("device", {"name": "LED"}, {
-    "quantity": "1",
-    "expand": 5,
-    "success": (collection, response) => {
-      if(collection.length === 1){
-        ledControlState = collection.first().get("value").findWhere({name: "On_OFF"}).get("state").findWhere({type: "Control"});
-      }
+wappsto.get("device", {"name": "Light"}, {
+  "quantity": "1",
+  "expand": 5,
+  "success": (collection, response) => {
+    if(collection.length === 1){
+      led = collection.first();
+      ledControlState = led.get("value").findWhere({name: "LED"}).get("state").findWhere({type: "Control"});
+
     }
-  });
-}
+  }
+});
 
-function getData(){
-  wappsto.functions.get("data", {}, {
-    "success": (collection, response) => {
-      data = collection.first();
-      if(wStream){
-        wStream.subscribe(data);
+wappsto.get("data", {}, {
+  "expand": 5,
+  "subscribe":true,
+  "success": (collection, response) => {
+    data = collection.first();
+    console.log(data);
+    data.on("change:blink", function() {
+      console.log("Data changed");
+      /* Here's the actual functionality */
+      if (data.get("blink")) {
+        blink();
+      } else {
+        stopBlinking();
       }
-      data.on("change:blink", function() {
-        /* Here's the actual functionality */
-        if (data.get("blink")) {
-          blink();
-        } else {
-          stopBlinking();
-        }
-      });
-    }
-  });
-}
-
+    });
+  }
+});
 
 function blink() {
+  console.log("blink");
   if (!blinking) {
     blinking = setInterval(function() {
       if (ledControlState && ledControlState.get("data") == "1") {
@@ -65,50 +59,6 @@ function stopBlinking() {
   }
 }
 
-
 function saveControlValue(theValue) {
   ledControlState.save({ data: theValue }, { patch: true });
-}
-
-// create and initialize stream
-function getStream() {
-  wappsto.functions.get('stream', {}, {
-    expand: 1,
-    success: function(streamCollection) {
-      if (streamCollection.length > 0) {
-        let stream = streamCollection.first();
-        startStream(stream);
-      } else {
-        createStream();
-      }
-    },
-    error: function() {
-      createStream();
-    }
-  });
-}
-
-function createStream() {
-  let stream = new wappsto.models.Stream();
-  stream.save({}, {
-    success: function() {
-      startStream(stream);
-    },
-    error: function() {
-      console.log('could not contact server');
-    }
-  });
-}
-
-function startStream(stream) {
-  wStream = new wappsto.Stream(stream);
-  wStream.open();
-  wStream.subscribe('/notification');
-  wStream.on('permission:added', function() {
-    console.log("permission added");
-    getLED();
-  });
-  if(data){
-    wStream.subscribe(data);
-  }
 }
