@@ -27,9 +27,9 @@ and background tasks */
 
 
 wappsto.get("data", {}, {
+  "subscribe":true,
   "success": (collection, response) => {
     data = collection.first();
-    console.log(data);
   }
 });
 

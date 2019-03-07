@@ -9,7 +9,7 @@ let blinking,
     ledControlState;
 
 
-wappsto.get("device", {"name": "Light"}, {
+wappsto.get("device", {"name": "Bulb"}, {
   "quantity": "1",
   "expand": 5,
   "success": (collection, response) => {
