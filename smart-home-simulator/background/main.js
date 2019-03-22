@@ -1,6 +1,5 @@
 let Wappsto = require("wapp-api");
 let wappsto = new Wappsto();
-
 let wappstoConsole = require("wapp-api/console");
 wappstoConsole.start(); // to start sending logs
 let network;
@@ -32,7 +31,7 @@ wappsto.get(
     },
     error: (networkCollection, response) => {
       console.log(response);
-      //createNetwork();
+      createNetwork();
     }
   }
 );
@@ -69,15 +68,15 @@ function createValue(valInfo) {
   value.set("permission", valInfo.permission);
   if (valInfo.dataType === "number") {
     value.set("number", {
-      min: valInfo.min | -999,
-      max: valInfo.max | 999,
-      step: valInfo.step | 1,
-      unit: valInfo.unit
+      min: valInfo.number.min,
+      max: valInfo.number.max,
+      step: valInfo.number.step | 1,
+      unit: valInfo.number.unit
     });
   } else if (valInfo.dataType === "string") {
     value.set("string", {
-      max: valInfo.max | 99,
-      encoding: valInfo.encoding
+      max: valInfo.string.max | 99,
+      encoding: valInfo.string.encoding
     });
   }
 
@@ -143,24 +142,41 @@ function createData() {
   network.get("device").forEach(function(device){
     device.get("value").forEach(function(value){
       var reportState = value.get("state").findWhere({type: "Report"});
-      var currentData = reportState.get("data");
+      var currentData = Number(reportState.get("data"));
+      var number = value.get("number");
       var newData;
-      switch (value.type) {
+      var range;
+      var plusOrMinus;
+
+      if (currentData < number.min) {
+        plusOrMinus = 1;
+      } else if (currentData > number.max) {
+        plusOrMinus = -1;
+      } else {
+        plusOrMinus = Math.pow(-1, Math.random() < 0.5 ? 0 : 1);
+      }
+
+      switch (value.get("type")) {
         case "temperature":
-          newData = parseInt(currentData) + Math.floor(Math.random() * 4.5) + 0.5 * (Math.random() < 0.5 ? -1 : 1);
+          range = {"min": 0, "max": 1};
           break;
         case "humidity":
-          newData = parseInt(currentData) + Math.floor(Math.random() * 10) + 1 * (Math.random() < 0.5 ? -1 : 1);
+          range = {"min": 1, "max": 5};
           break;
         case "co2":
-          newData = parseInt(currentData) + Math.floor(Math.random() * 700) + 1 * (Math.random() < 0.5 ? -1 : 1);
+          range = {"min": 10, "max": 200};
           break;
         default:
-          newData = parseInt(currentData) + 0.5 * (Math.random() < 0.5 ? -1 : 1);
+          range = {"min": 1, "max": 2};
       }
+      if(isNaN(currentData)){
+        currentData = 0;
+      }
+      newData = currentData + plusOrMinus * Math.floor(Math.random() * (range.max - range.min) + range.min);
+
       var attr = {
         timestamp: new Date().toISOString(),
-        data: newData + "",
+        data: newData+"",
         status: "Send"
       };
 
