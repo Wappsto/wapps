@@ -1,0 +1,47 @@
+{
+  "name":"Smart Home Simulator",
+  "device":[{
+      "description":"Multi-sensor device that measures indoor temperature, humidity and CO2",
+      "name":"Multi-sensor",
+      "manufacturer":"Seluxit",
+      "communication":"always",
+      "value":[{
+          "name":"Temperature sensor",
+          "type":"temp",
+          "permission":"r",
+          "dataType":"number",
+          "number":{
+            "min":-40,
+            "max":100,
+            "step":0.5,
+            "unit":"C"
+          },
+          "data":"21.5"
+        }, {
+          "name":"Humidity sensor",
+          "type":"humidity",
+          "permission":"r",
+          "dataType":"number",
+          "number":{
+            "min":0,
+            "max":100,
+            "step":1,
+            "unit":"%"
+          },
+          "data":"50"
+        },{
+          "name":"C02 sensor",
+          "type":"co2",
+          "permission":"r",
+          "dataType":"number",
+          "number":{
+            "min":0,
+            "max":50000,
+            "step":1,
+            "unit":"ppm"
+          },
+          "data":"981"
+      }]
+    }
+  ]
+}
