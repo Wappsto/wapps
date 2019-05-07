@@ -1,0 +1,41 @@
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+  </head>
+
+  <body>
+    <article>
+      <h1>Philips HUE Light Converter</h1>
+      <section>
+        <h4>Complete the following steps to connect your HUE Bridge</h4>
+        <ul>
+          <li>
+            <p>Log in to your Meet hue account and allow this wapp to get the access token.</p>
+            <a id="login" class="button" href="#" onclick="openLoginPage()">Log in</a>
+          </li>
+          <li><p>Accept permission requests in Wappsto:</p>
+            <ul>
+              <li><p>to save Hue Bridge data under your wappsto account.</p></li>
+              <li><p>to create a webhook (external synchronisation) with Meet Hue.</p></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>Background app:</h4>
+        <p>Here you can see the <b>status</b> of the background tasks.</p>
+        <p class="callout secondary" id="statusId">Waiting for permissions.</p>
+        <p>If for some reason background app have crashed, or stuck, you can try the restart button.</p>
+        <button class="button" onclick="refreshBackground()">Restart Background</button>
+      </section>
+
+    </article>
+  </body>
+</html>

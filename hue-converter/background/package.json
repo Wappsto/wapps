@@ -1,0 +1,7 @@
+{
+    "dependencies": {
+        "wapp-api": "^1.0.0",
+        "base-64": "0.1.0",
+        "axios": "0.18.0"
+    }
+}
