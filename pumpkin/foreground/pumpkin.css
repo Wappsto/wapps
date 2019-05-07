@@ -1,0 +1,71 @@
+body,
+html {
+  background-color: black;
+  height: 100%;
+  color:yellow;
+  text-align:center;
+}
+
+.pumpkin {
+  height: 200px;
+  width: 230px;
+  position: relative;
+  margin: 15% auto 0 auto;
+}
+
+.face {
+  position: relative;
+  height: 100%;
+}
+
+.pumpkin .segment {
+  position: absolute;
+  width: 120px;
+  height: 100%;
+  border-radius: 47%;
+  background: radial-gradient( #ff9d00 0%, #ff5600 100%);
+}
+
+.pumpkin .segment:nth-child(1),
+.pumpkin .segment:nth-child(2) {
+  height: 80%;
+  top: 10%;
+}
+
+.pumpkin .segment:nth-child(3),
+.pumpkin .segment:nth-child(4) {
+  height: 88%;
+  top: 6%;
+}
+
+.pumpkin .segment:nth-child(1) {
+  left: 0px;
+}
+
+.pumpkin .segment:nth-child(2) {
+  left: 110px;
+}
+
+.pumpkin .segment:nth-child(3) {
+  left: 20px;
+}
+
+.pumpkin .segment:nth-child(4) {
+  left: 90px;
+}
+
+.pumpkin .segment:nth-child(5) {
+  left: 55px;
+}
+
+.stem {
+  position: absolute;
+  color: green;
+  font-size: 100px;
+  font-weight: 600;
+  font-family: sans-serif;
+  top: -40px;
+  left: 105px;
+  z-index: -1;
+  transform: rotate(-240deg) skew(-40deg);
+}

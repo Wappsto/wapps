@@ -1,0 +1,32 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="stylesheet" type="text/css" href="./pumpkin.css">
+    <link rel="stylesheet" type="text/css" href="./face.css">
+    <title>Pumpkin</title>
+    <script src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"></script>
+    <script src='jquery.min.js'></script>
+    <script src='pumpkinConfig.js'></script>
+    <script src='index.js'></script>
+  </head>
+  <body>
+    <div class="pumpkin">
+      <div class="segment"></div>
+      <div class="segment"></div>
+      <div class="segment"></div>
+      <div class="segment"></div>
+      <div class="segment"></div>
+      <div class="stem">S</div>
+      <div class="face">
+        <input id="leftEye" class="eye" type="color">
+        <input id="rightEye" class="eye" type="color">
+        <button id="nose" class="nose">update</button>
+        <input id="mouth" class="mouth" type="text">
+      </div>
+    </div>
+    <h3>I'm hot: <span id="hotnessLevel"></span></h3>
+    <p>I see:</p><input type="image">
+  </body>
+</html>
