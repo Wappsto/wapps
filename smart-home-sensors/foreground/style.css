@@ -1,0 +1,183 @@
+/* Apply global styling: */
+
+body {
+  background: #f6f7fc;
+}
+
+h3 {
+  margin-top: 25px;
+}
+
+
+/* Style the boxes: */
+.sensors > .grid-x > .cell, .led > .grid-x > .cell {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-bottom: 3px solid white;
+  background: white;
+  text-align: center;
+  padding: 30px 20px 10px 20px;
+  transition: transform 0.3s ease-out;
+}
+
+.led > .grid-x > .cell {
+  min-height: 290px;
+}
+
+.sensors > .grid-x > .cell:hover, .led > .grid-x > .cell:hover {
+  /* Show box bottom line on hover: */
+  border-bottom: 3px solid #7366f0;
+}
+
+.sensors > .grid-x > .cell:hover {
+  /* Box hover annimation efect: */
+  transform: translateY(-8px) !important;
+  box-shadow: 0 1rem 3rem rgba(31,45,61,.125) !important;
+}
+
+.sensors > .grid-x .type {
+  color: grey;
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+
+.sensors i {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+time {
+  color: #969696;
+  font-size: 11.5px;
+}
+
+.info {
+  font-size: 14px;
+}
+
+.options button {
+  border: none !important;
+  margin: 0;
+}
+.options button:focus {
+  outline: none;
+}
+
+
+/* Overwrite the default Slider style: */
+.iro__slider {
+  display: none !important;
+}
+
+#roundSlider .rs-range-color  {
+  background-color: #33B5E5;
+}
+
+#roundSlider .rs-path-color  {
+  background-color: #C2E9F7;
+}
+
+#roundSlider .rs-handle  {
+  background-color: #C2E9F7;
+  padding: 7px;
+  border: 2px solid #C2E9F7;
+}
+
+#roundSlider .rs-handle.rs-focus  {
+  border-color: #33B5E5;
+}
+
+#roundSlider .rs-handle:after  {
+  border-color: #33B5E5;
+  background-color: #33B5E5;
+}
+
+#roundSlider .rs-border  {
+  border-color: transparent;
+}
+
+#roundSlider .rs-tooltip-text {
+  font-size: 1.5625rem;
+}
+
+#roundSlider .rs-tooltip .rs-input {
+  padding: 0;
+}
+
+#roundSlider .rs-tooltip-text::after {
+  content: ' %';
+}
+
+
+/* Style the "Panel" box icons: */
+.panel-icons > .cell {
+  cursor: pointer;
+  font-size: 27px;
+  color: #adadad;
+  margin: 10px 0 20px;
+}
+
+.panel-icons > .cell:hover i {
+  /* Change icon opacity on mouse hover: */
+  opacity: 0.8;
+}
+
+.panel-icons input:checked ~ i {
+  /* When the radio button (icon) is checked, change the icon color: */
+  color: #7366f0;
+}
+
+#v-button .switch {
+  margin: 30px 0;
+}
+
+
+/* Style the "Switch brightness" button: */
+.ks-cboxtags label {
+  border: 2px solid rgba(139, 139, 139, .3);
+  color: #adadad;
+  border-radius: 25px;
+  white-space: nowrap;
+  margin: 3px 0px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all .2s ease;
+}
+
+.ks-cboxtags label {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.ks-cboxtags label::before {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 12px;
+  padding: 2px 6px 2px 2px;
+  content: "\f011";
+}
+
+.ks-cboxtags input[type="checkbox"]:checked + label::before {
+  content: "\f00c";
+}
+
+.ks-cboxtags input[type="checkbox"]:checked + label {
+  background-color: #7366f0;
+  color: #fff;
+}
+
+.ks-cboxtags input[type="checkbox"] {
+  display: absolute;
+}
+
+.ks-cboxtags input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+}
