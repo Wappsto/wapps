@@ -1,0 +1,23 @@
+* {
+  font-family: sans-serif;
+}
+
+body {
+  padding: 2rem;
+}
+
+button {
+  margin-right: 1rem;
+}
+
+.success {
+  border: solid thin green;
+  padding: 0.5rem;
+  color: darkgreen;
+}
+
+.failure {
+  border: solid thin red;
+  padding: 0.5rem;
+  color: darkred;
+}

@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "nodemon main.js"
+  },
+  "dependencies": {
+    "axios": "0.18.0",
+    "wapp-api": "^1.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
