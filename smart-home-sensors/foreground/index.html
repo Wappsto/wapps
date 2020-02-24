@@ -1,67 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <title></title>
     <!-- Load wapp-api helper functions that are used in "index.js" file: -->
     <script src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"></script>
 
     <!-- Load Zurb Foundation design framework: -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/css/foundation.min.css"
-      integrity="sha256-xpOKVlYXzQ3P03j397+jWFZLMBXLES3IiryeClgU5og= sha384-gP4DhqyoT9b1vaikoHi9XQ8If7UNLO73JFOOlQV1RATrA7D0O7TjJZifac6NwPps sha512-AKwIib1E+xDeXe0tCgbc9uSvPwVYl6Awj7xl0FoaPFostZHOuDQ1abnDNCYtxL/HWEnVOMrFyf91TDgLPi9pNg=="
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/css/foundation-prototype.min.css"
-      integrity="sha256-ksLmXa0k3ACbX6azB9g6l7XlmSKFBkuH0DXKNwULXtE= sha384-RGTvu65DAT+yLQsTj5tnITDrMfrS5mbajNAYILSg4hHr9vRr/3Y9q0WAdChqLKfx sha512-KMJ7XYrv5UcwEvJFaYnLSdN5O3fT7aQvjed//LQPB3AsN4VPA/wXG9j4x4vKZkjNmU/U8aZC9Ac3FYxs9lPXcw=="
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/js/foundation.min.js"
-      integrity="sha256-/PFxCnsMh+nTuM0k3VJCRch1gwnCfKjaP8rJNq5SoBg= sha384-9ksAFjQjZnpqt6VtpjMjlp2S0qrGbcwF/rvrLUg2vciMhwc1UJJeAAOLuJ96w+Nj sha512-UMSn6RHqqJeJcIfV1eS2tPKCjzaHkU/KqgAnQ7Nzn0mLicFxaVhm9vq7zG5+0LALt15j1ljlg8Fp9PT1VGNmDw=="
-      crossorigin="anonymous"
-    ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/css/foundation.min.css" integrity="sha256-xpOKVlYXzQ3P03j397+jWFZLMBXLES3IiryeClgU5og= sha384-gP4DhqyoT9b1vaikoHi9XQ8If7UNLO73JFOOlQV1RATrA7D0O7TjJZifac6NwPps sha512-AKwIib1E+xDeXe0tCgbc9uSvPwVYl6Awj7xl0FoaPFostZHOuDQ1abnDNCYtxL/HWEnVOMrFyf91TDgLPi9pNg==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/css/foundation-prototype.min.css" integrity="sha256-ksLmXa0k3ACbX6azB9g6l7XlmSKFBkuH0DXKNwULXtE= sha384-RGTvu65DAT+yLQsTj5tnITDrMfrS5mbajNAYILSg4hHr9vRr/3Y9q0WAdChqLKfx sha512-KMJ7XYrv5UcwEvJFaYnLSdN5O3fT7aQvjed//LQPB3AsN4VPA/wXG9j4x4vKZkjNmU/U8aZC9Ac3FYxs9lPXcw==" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.3/dist/js/foundation.min.js" integrity="sha256-/PFxCnsMh+nTuM0k3VJCRch1gwnCfKjaP8rJNq5SoBg= sha384-9ksAFjQjZnpqt6VtpjMjlp2S0qrGbcwF/rvrLUg2vciMhwc1UJJeAAOLuJ96w+Nj sha512-UMSn6RHqqJeJcIfV1eS2tPKCjzaHkU/KqgAnQ7Nzn0mLicFxaVhm9vq7zG5+0LALt15j1ljlg8Fp9PT1VGNmDw==" crossorigin="anonymous"></script>
 
     <!-- Load Font Awesome icons: -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
     <!-- Load additional styling & JavaScript libraries: -->
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro/dist/iro.min.js"></script>
     <script src="chroma.min.js"></script>
     <script src="roundslider.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="roundslider.min.css" />
+    <link rel="stylesheet" href="roundslider.min.css">
     <script src="jquery.timeago.js"></script>
 
     <!-- Load custom-made JavaScript functions for this wapp: -->
     <script src="index.js"></script>
 
     <!-- Load custom-made styling for this wapp: -->
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div class="grid-container">
       <div class="grid-x grid-margin-x grid-padding-y grid-padding-x">
+
         <!-- Section for the wapp title: -->
         <section class="cell text-center">
-          <h3>Smart Home</h3>
+    			<h3>Smart Home</h3>
         </section>
 
         <!-- Section for the control buttons: -->
         <section class="cell options">
           <div class="grid-x align-right">
+
             <!-- Button icon "show information": -->
             <div class="cell shrink">
               <button class="hollow button secondary" onclick="showDetails()">
@@ -75,17 +54,18 @@
                 <i class="fas fa-lg fa-sync-alt"></i>
               </button>
             </div>
+
           </div>
         </section>
 
         <!-- Section for the sensors: -->
         <section class="cell sensors">
           <h4>Sensors</h4>
-          <div
-            class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-2 large-up-4"
-          >
+          <div class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-2 large-up-4">
+
             <!-- CO2 box: -->
             <div class="cell" id="v-CO2">
+
               <!-- Elements for the initial view: -->
               <div>
                 <!-- Sensor icon: -->
@@ -113,6 +93,7 @@
 
             <!-- Temperature box: -->
             <div class="cell" id="v-temperature">
+
               <!-- Elements for the initial view: -->
               <div>
                 <i class="fas fa-thermometer-three-quarters"></i>
@@ -136,6 +117,7 @@
 
             <!-- Pressure box: -->
             <div class="cell" id="v-pressure">
+
               <!-- Elements for the initial view: -->
               <div>
                 <i class="fas fa-tachometer-alt"></i>
@@ -159,6 +141,7 @@
 
             <!-- Humidity box: -->
             <div class="cell" id="v-humidity">
+
               <!-- Elements for the initial view: -->
               <div>
                 <i class="fas fa-tint"></i>
@@ -179,15 +162,15 @@
                 <p>Step: <span class="step"></span></p>
               </div>
             </div>
+
           </div>
         </section>
 
         <!-- Section for the LED elements: -->
         <section class="cell led">
           <h4>LED</h4>
-          <div
-            class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-2 large-up-4"
-          >
+          <div class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-2 large-up-4">
+
             <!-- RGB box: -->
             <div class="cell" id="v-RGB">
               <h5>RGB</h5>
@@ -197,9 +180,7 @@
                 <!-- Element for the Color Picker (iro.js): -->
                 <div id="colorPicker"></div>
                 <!-- Display info when was the last current value update (timeago): -->
-                <div class="text-left">
-                  <i class="fas fa-circle"></i><time></time>
-                </div>
+                <div class="text-left"><i class="fas fa-circle"></i><time></time></div>
               </div>
 
               <!-- Elements for the detailed information view: -->
@@ -242,79 +223,44 @@
 
             <!-- Panel box: -->
             <div class="cell" id="v-LED_Panel">
+
               <!-- Elements for the initial view - icons & input filed: -->
               <div class="grid-y grid-frame">
                 <h5>Panel</h5>
                 <div class="cell shrink">
-                  <div class="grid-x small-up-5 panel-icons">
+                  <div class="grid-x small-up-4 panel-icons">
+
                     <!-- CO2 button icon: -->
                     <label class="cell">
-                      <input
-                        class="hide"
-                        type="radio"
-                        name="panel-icons"
-                        value="v-CO2"
-                      />
+                      <input class="hide" type="radio" name="panel-icons" value="v-CO2">
                       <i class="fab fa-envira"></i>
                     </label>
 
                     <!-- Temperature button icon: -->
                     <label class="cell">
-                      <input
-                        class="hide"
-                        type="radio"
-                        name="panel-icons"
-                        value="v-temperature"
-                      />
+                      <input class="hide" type="radio" name="panel-icons" value="v-temperature">
                       <i class="fas fa-thermometer-three-quarters"></i>
                     </label>
 
                     <!-- Pressure button icon: -->
                     <label class="cell">
-                      <input
-                        class="hide"
-                        type="radio"
-                        name="panel-icons"
-                        value="v-pressure"
-                      />
+                      <input class="hide" type="radio" name="panel-icons" value="v-pressure">
                       <i class="fas fa-tachometer-alt"></i>
                     </label>
 
                     <!-- Humidity button icon: -->
                     <label class="cell">
-                      <input
-                        class="hide"
-                        type="radio"
-                        name="panel-icons"
-                        value="v-humidity"
-                      />
+                      <input class="hide" type="radio" name="panel-icons" value="v-humidity">
                       <i class="fas fa-tint"></i>
                     </label>
 
-                    <!-- Temperature & CO2 button icon: -->
-                    <label class="cell">
-                      <input
-                        class="hide"
-                        type="radio"
-                        name="panel-icons"
-                        value="temperature-CO2"
-                      />
-                     <div id="temp-CO2-icon">
-                      <i id="temp-icon" class="fas fa-thermometer-three-quarters"></i>
-                      <i id="CO2-icon" class="fab fa-envira"></i>
-                     </div>
-                    </label>
                   </div>
                 </div>
 
                 <!-- Input text filed: -->
                 <form class="cell auto">
-                  <input type="text" class="rounded" />
-                  <input
-                    class="button rounded shadow-hover-focus hollow"
-                    type="submit"
-                    value="Set text"
-                  />
+                  <input type="text" class="rounded">
+                  <input class="button rounded shadow-hover-focus hollow" type="submit" value="Set text">
                 </form>
 
                 <!-- Display info when was the last current value update (timeago): -->
@@ -333,14 +279,24 @@
 
             <!-- Button box: -->
             <div class="cell" id="v-button">
+
               <!-- Elements for the initial view - button & slider: -->
               <div class="grid-y grid-frame">
                 <h5>Button</h5>
 
+                <!-- On/Of slider: -->
+                <div class="cell switch large shrink">
+                  <input class="switch-input" id="led-btb-onOff" type="checkbox" disabled>
+                  <label class="switch-paddle rounded" for="led-btb-onOff" style="cursor:default">
+                    <span class="switch-active" aria-hidden="true">&nbsp;On</span>
+                    <span class="switch-inactive" aria-hidden="true">Off</span>
+                  </label>
+                </div>
+
                 <!-- Button "Switch brightness": -->
                 <div class="cell ks-cboxtags auto">
-                  <input type="checkbox" id="switch-brightness" checked disabled/>
-                  <label for="switch-brightness" id="brightness-label"></label>
+                  <input type="checkbox" id="switch-brightness" checked>
+                  <label for="switch-brightness">Switch brightness</label>
                 </div>
 
                 <!-- Display info when was the last current value update (timeago): -->
