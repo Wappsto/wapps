@@ -8,8 +8,6 @@ data,
 ledReportState,
 ledControlState;
 
-let blinking;
-
 /* this is Wapp-API function that promts a request to the user that allows to match yourcdevice to the installation of this app */
 
 wappsto.get("device", {"name": "Bulb"}, {
@@ -32,20 +30,6 @@ wappsto.get("data", {}, {
   "subscribe":true,
   "success": (collection, response) => {
     data = collection.first();
-
-    /* Uncomment the code below in case of unavailable background */
-    /*
-    console.log(data);
-    data.on("change:blink", function() {
-      console.log("Data changed");
-      if (data.get("blink")) {
-        enableBlinking();
-      } else {
-        disableBlinking();
-      }
-    });
-    */
-    /* End. Don't forget the code further below */
   }
 });
 
@@ -80,29 +64,6 @@ function stopBlinking() {
   data.save({ blink: false }, { patch: true });
 }
 
-/* Uncomment the code below in case of unavailable background */
-/*
-function enableBlinking() {
-  console.log("blink");
-  if (!blinking) {
-    blinking = setInterval(function() {
-      if (ledControlState && ledControlState.get("data") == "1") {
-        saveControlValue("0");
-      } else {
-        saveControlValue("1");
-      }
-    }, 1000);
-  }
-}
-
-function disableBlinking() {
-  if (blinking) {
-    clearInterval(blinking);
-    blinking = false;
-  }
-}
-*/
-/* End */
 function saveControlValue(theValue) {
   ledControlState.save({data: theValue }, { patch: true });
 }
