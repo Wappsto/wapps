@@ -1,68 +1,59 @@
-const Wappsto = require("wapp-api");
+let Wappsto = require("wapp-api");
 
-const wappsto = new Wappsto();
+let wappsto = new Wappsto();
 
-const wappstoConsole = require("wapp-api/console");
+let wappstoConsole = require("wapp-api/console");
 wappstoConsole.start();
 
 let device, sensors, led, data;
 
-let getNetwork = async () => {
-  try {
-    const collection = await wappsto.get(
-      "network",
-      {
-        name: "Smart Home"
-      },
-      {
-        quantity: 1,
-        expand: 5,
-        subscribe: true
-      }
-    );
+wappsto
+  .get(
+    "network",
+    {
+      name: "Smart Home"
+    },
+    {
+      quantity: 1,
+      expand: 5,
+      subscribe: true
+    }
+  )
+  .then(function(collection) {
     device = collection.get("0.device");
-  } catch (error) {
-    console.log(error);
-  }
-};
+    sensors = device.find({ name: "Sensors" }).get("value");
+    led = device.find({ name: "LED" }).get("value");
 
-getNetwork().then(() => {
-  sensors = device.find({ name: "Sensors" }).get("value");
-  led = device.find({ name: "LED" }).get("value");
+    initSensorListerners();
+    initButtonListener();
+    initBrightnessListener();
+  })
+  .catch(console.error);
 
-  initSensorListerners();
-  initButtonListener();
-  initBrightnessListener();
-});
-
-let getData = async () => {
-  try {
-    const collection = await wappsto.get(
-      "data",
-      {},
-      {
-        expand: 5,
-        subscribe: true
-      }
-    );
+wappsto
+  .get(
+    "data",
+    {},
+    {
+      expand: 5,
+      subscribe: true
+    }
+  )
+  .then(function(collection) {
     data = collection.first();
-  } catch (error) {
-    console.log(error);
-  }
-};
 
-getData().then(() => {
-  data.on("change", () => {
-    updateSensorData(data.get("sensorToUpdate"));
-  });
-});
+    data.on("change", function() {
+      updateSensorData(data.get("sensorToUpdate"));
+    });
+  })
+  .catch(console.error);
 
 function initSensorListerners() {
   if (sensors) {
     sensors.each(sensorValue => {
       let sensorState = sensorValue.get("state").find({ type: "Report" });
 
-      sensorState.on("change:data", () => {
+      sensorState.on("change:data", function() {
         let currentlySelectedSensor = data.get("sensorToUpdate");
         let sensorName = sensorValue.get("name");
 
@@ -90,15 +81,21 @@ function updateSensorData(sensorValueToBeUpdated) {
         .find({ type: "Report" })
         .get("data");
 
-      let co2_value = sensors.find({ name: "CO2" });
-      let co2_data = co2_value
-        .get("state")
+      let CO2_value = sensors.find({ name: "CO2" });
+      let CO2_data = CO2_value.get("state")
         .find({ type: "Report" })
         .get("data");
 
       panel.save(
         {
-          data: `${+Number(temp_data).toFixed(2)} ${temp_value.get("number.unit")} ${+Number(co2_data).toFixed(2)} ${co2_value.get("number.unit")}`
+          data:
+            +Number(temp_data).toFixed(2) +
+            " " +
+            temp_value.get("number.unit") +
+            " " +
+            +Number(CO2_data).toFixed(2) +
+            " " +
+            CO2_value.get("number.unit")
         },
         { patch: true }
       );
@@ -112,7 +109,11 @@ function updateSensorData(sensorValueToBeUpdated) {
           .get("data");
 
         panel.save({
-          data: `${+Number(data).toFixed(2)} ${foundSensorValue.get("number.unit")}`
+          data:
+            +Number(data).toFixed(2) +
+            " " +
+            foundSensorValue.get("number.unit") +
+            " "
         });
       } else {
         console.log("Sensor could not be found");
@@ -132,7 +133,7 @@ function initButtonListener() {
       .get("state")
       .find({ type: "Control" });
 
-    button.on("change:data", model => {
+    button.on("change:data", function(model) {
       let isButtonOn = model.get("data");
       let userBrightnessOption = data.get("brightnessOption");
       let setting = 0;
@@ -158,7 +159,7 @@ function initBrightnessListener() {
       .find({ type: "Report" });
     let userBrightnessOption = data.get("brightnessOption");
 
-    brightnessState.on("change:data", () => {
+    brightnessState.on("change:data", function() {
       let currentBrightnessOption = brightnessState.get("data");
       let currentButtonOption = button.get("data");
 
