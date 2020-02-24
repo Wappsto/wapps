@@ -6,18 +6,16 @@ body {
   padding: 2rem;
 }
 
-button {
-  margin-right: 1rem;
-}
-
 .success {
   border: solid thin green;
-  padding: 0.5rem;
-  color: darkgreen;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: green;
 }
 
 .failure {
   border: solid thin red;
-  padding: 0.5rem;
-  color: darkred;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: red;
 }

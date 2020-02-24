@@ -1,5 +1,3 @@
-let client_id = "your_client_id";
-
 let wappsto = new Wappsto();
 let data, network;
 let devices = [];
@@ -8,7 +6,7 @@ let showStatus;
 let stationName;
 let stationData;
 
-$(document).ready(function() {
+window.onload = () => {
   showStatus = document.getElementById("statusId");
   stationName = document.getElementById("stationId");
   stationData = document.getElementById("stationData");
@@ -33,7 +31,7 @@ $(document).ready(function() {
       }
     }
   );
-});
+};
 
 let getNetwork = function() {
   wappsto.get(
@@ -47,7 +45,7 @@ let getNetwork = function() {
           network = collection.first();
 
           devices = network.get("device");
-          console.log("updating data");
+
           updateData();
         } else {
           showStatus.innerHTML =
@@ -63,44 +61,22 @@ let getNetwork = function() {
   );
 };
 
-let deleteExistingData = function() {
-  wappsto.get(
-    "network",
-    { name: "Netatmo Weather Station" },
-    {
-      expand: 5,
-      subscribe: true,
-      success: function(collection) {
-        if (collection.length > 0) {
-          network = collection.first();
-
-          network.destroy().catch(function(error) {
-            // console.log(error);
-          });
-
-          showStatus.innerHTML =
-            "<p class='success'> Succesfully deleted existing data </p>";
-          stationName.innerHTML = "";
-          stationData.innerHTML = "";
-        }
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    }
-  );
-};
-
-let restart = function() {
-  getNetwork();
-};
-
 let updateData = function() {
   showStatus.innerHTML = "";
   status = data.get("status_message");
   showStatus.innerHTML = status + "";
 
-  if (status === "Succesfully retrieved Wappsto data") {
+  if (
+    status === "Failed to convert Wappsto data" ||
+    status === "Failed to update Wappsto data"
+  ) {
+    showStatus.innerHTML = "<p class='failure'> " + status + "</p>";
+  }
+
+  if (
+    status === "Succesfully converted Netatmo data to Wappsto UDM" ||
+    status === "Succesfully updated Wappsto data"
+  ) {
     showStatus.innerHTML = "<p class='success'> " + status + "</p>";
     stationName.innerHTML = "";
     stationName.innerHTML = data.get("stationName") + " Station";
@@ -178,26 +154,6 @@ let updateData = function() {
           }
         });
       });
-
-      if (data.get("lostDevices")) {
-        let lostDevices = data.get("lostDevices");
-        lostDevices.forEach(function(lostDevice) {
-          stationData.innerHTML +=
-            "<p><strong> " + lostDevice + " </strong> is unreachable </p>";
-        });
-      }
     }
   }
-};
-
-let openLoginPage = function() {
-  // needs redirect uri
-  let url =
-    "https://api.netatmo.com/oauth2/authorize?client_id=" +
-    client_id +
-    "&redirect_uri=http://localhost:3000&scope=read_station&state=seluxit";
-
-  window.open(url);
-
-  //window.location.replace(url);
 };

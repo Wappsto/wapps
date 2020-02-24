@@ -1,96 +1,244 @@
-let Wappsto = require("wapp-api");
-let axios = require("axios");
-let config = require("./config");
-let networkInfo = require("./networkInfo.json");
+const Wappsto = require("wapp-api");
+const networkInfo = require("./networkInfo.json");
+const netatmo = require("./netatmo");
 
-let wappsto = new Wappsto({
-  baseUrl: "https://wappsto.com/services",
-  session: "68c355e7-d255-4f4c-b912-d35b12f709c7"
-});
+const wappsto = new Wappsto();
+
+const wappstoConsole = require("wapp-api/console");
+wappstoConsole.start();
 
 let network, data;
-let unreacheableDevices = [];
 // Timer used for updating data
 let updateTimer;
-// 3 min
-let timeInterval = 180000;
+// 5 min
+let timeInterval = 300000;
 
 let statusMessage = {
-  warning_user_login:
-    "Please login into your Netatmo account to grant permissions to this app",
-  success_user_granted_netatmo_data_access: "Permission granted",
-  error_user_denied_netatmo_data_access:
-    "Permission to access Netatmo account data denied",
-  success_retrieve_wappsto_data: "Succesfully retrieved Wappsto data",
-  error_retrieve_wappsto_data: "Failed to retrieve Wappsto data"
+  success_convert_netatmo_data:
+    "Succesfully converted Netatmo data to Wappsto UDM",
+  error_convert_wappsto_data: "Failed to convert Wappsto data",
+  success_update_netatmo_data: "Succesfully updated Wappsto data",
+  error_update_wappsto_data: "Failed to update Wappsto data"
 };
 
-wappsto.get(
-  "data",
-  {},
-  {
-    expand: 1,
-    subscribe: true,
-    success: function(collection) {
-      data = collection.first();
-
-      checkNetwork();
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  }
-);
-
-// Check if network exists; if not then create it
-let checkNetwork = function() {
-  wappsto.get(
-    "network",
-    {},
-    {
-      expand: 5,
-      subscribe: true,
-      success: function(collection) {
-        if (collection.length > 0) {
-          network = collection.first();
-
-          setUpdateTimer();
-        } else {
-          network = createNetwork();
-          // get the users station data with which to populate the network
-          getStationData();
-        }
-      },
-      error: function(error) {
-        console.log(error);
+let getData = async () => {
+  try {
+    let collection = await wappsto.get(
+      "data",
+      {},
+      {
+        expand: 1,
+        subscribe: true
       }
+    );
+    return collection;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+getData()
+  .then(collection => {
+    data = collection.first();
+
+    if (!data.get("accessToken")) {
+      netatmo.getAccessToken().then(response => {
+        updateWappstoData({
+          accessToken: response.data.access_token,
+          refreshToken: response.data.refresh_token,
+          expiresIn: response.data.expires_in
+        }).catch(error => {
+          console.log("Could not get access token: " + error);
+        });
+
+        startWapp();
+      });
+    } else {
+      startWapp();
     }
-  );
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
+let getNetwork = async () => {
+  try {
+    let collection = await wappsto.get(
+      "network",
+      { name: "Netatmo Weather Station" },
+      {
+        expand: 5,
+        subscribe: true
+      }
+    );
+    return collection;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// If the Netatmo Weather Station network does not already exist, start the conversion process
+let startWapp = function() {
+  getNetwork()
+    .then(collection => {
+      if (collection.length > 0) {
+        network = collection.first();
+        // Update the Weather Station network with the most recent data
+        updateStationData();
+      } else {
+        // Get the users station data with which to populate the new Weather Station network
+        netatmo
+          .getStationData(data.get("accessToken"))
+          .then(response => {
+            if (response) {
+              convertNetatmoDataToWappstoUDM(response);
+            } else {
+              // If response is null then refresh tokens and try to start Wapp again
+              refreshTokens(startWapp);
+            }
+          })
+          .catch(error => {
+            console.log("Could not get station data: " + error);
+
+            updateWappstoData({
+              status_message: statusMessage.error_convert_wappsto_data
+            });
+          });
+      }
+    })
+    .catch(error => {
+      console.log("Could not get Netatmo Weather Station network: " + error);
+    });
+};
+
+// Convert the users data from the Netatmo API into the Wappsto UDM
+let convertNetatmoDataToWappstoUDM = function(response) {
+  // Create the Netatmo Weather Station network
+  network = createNetwork();
+  // Data of the Main Module - every station has this device
+  let deviceData = response.data.body.devices;
+
+  let stationName = deviceData[0].station_name;
+  // Saving station name to display in the FG
+  if (data.get("stationName") !== stationName) {
+    updateWappstoData({ stationName: stationName });
+  }
+
+  addDevicesToNetwork(deviceData);
+  // Data of the modules associated with the Main Module
+  let moduleData = response.data.body.devices[0].modules;
+
+  addDevicesToNetwork(moduleData);
+  // Saving network
+  saveNetwork();
+
+  updateWappstoData({
+    status_message: statusMessage.success_convert_netatmo_data
+  });
 };
 
 // Update station data
 let updateStationData = function() {
-  unreacheableDevices = [];
-  // Remove previous unreacheable devices
-  updateWappstoData({ lostDevices: unreacheableDevices });
-
+  console.log("updating..");
+  // Clear update timer
   if (updateTimer) {
     clearInterval(updateTimer);
   }
-  // Destroy existing network and then create new network using new data
-  network
-    .destroy()
-    .catch(function(error) {
-      // console.log(error);
-    })
-    .then(function() {
-      network = createNetwork();
 
-      getStationData();
+  netatmo
+    .getStationData(data.get("accessToken"))
+    .then(response => {
+      if (response) {
+        let deviceData = response.data.body.devices;
+        // Saving station name to display in the FG
+        let stationName = deviceData[0].station_name;
+
+        if (data.get("stationName") !== stationName) {
+          updateWappstoData({ stationName: stationName });
+        }
+
+        let devices = network.get("device");
+        // Handling the update of Main module
+        let mainModuleDevice = devices.at(0);
+
+        let valuesToUpdate = mainModuleDevice.get("value");
+
+        valuesToUpdate.forEach(valueToUpdate => {
+          let reportState = valueToUpdate.get("state").find({ type: "Report" });
+          // deviceData[0] refers to the data of the Main Module
+          let newData = deviceData[0].dashboard_data
+            ? deviceData[0].dashboard_data[valueToUpdate.get("name")]
+            : 0;
+
+          if (reportState.get("data") !== newData) {
+            reportState.save({ data: newData.toString() }, { patch: true });
+          }
+        });
+        // Handling the update of smaller modules
+        if (devices.length > 1) {
+          // Omitting device at index 0 because it is always going to be Main Module by design
+          for (let i = 1; i < devices.length; i++) {
+            let currentDevice = devices.at(i);
+
+            let moduleData = response.data.body.devices[0].modules;
+
+            moduleData.forEach(module => {
+              // Matching the current device with its corresponding module data
+              if (currentDevice.get("name") === module.module_name) {
+                let valuesToUpdate = currentDevice.get("value");
+
+                valuesToUpdate.forEach(valueToUpdate => {
+                  let reportState = valueToUpdate
+                    .get("state")
+                    .find({ type: "Report" });
+
+                  let newData = module.dashboard_data
+                    ? module.dashboard_data[valueToUpdate.get("name")]
+                    : 0;
+
+                  if (reportState.get("data") !== newData) {
+                    reportState.save(
+                      { data: newData.toString() },
+                      { patch: true }
+                    );
+                  }
+                });
+              }
+            });
+          }
+          // Main Module device and smaller modules are updated
+          setUpdateTimer();
+
+          updateWappstoData({
+            status_message: statusMessage.success_update_netatmo_data
+          });
+        } else {
+          // Main Module device is updated
+          setUpdateTimer();
+
+          updateWappstoData({
+            status_message: statusMessage.success_update_netatmo_data
+          });
+        }
+      } else {
+        // If response is null then refresh tokens and try to update data again
+        refreshTokens(updateStationData);
+      }
+    })
+    .catch(error => {
+      console.log("Could not get station data: " + error);
+
+      updateWappstoData({
+        status_message: statusMessage.error_update_wappsto_data
+      });
     });
 };
 
+// Set timer used to update station data
 let setUpdateTimer = function() {
+  if (updateTimer) {
+    clearInterval(updateTimer);
+  }
   updateTimer = setInterval(function() {
     updateStationData();
   }, timeInterval);
@@ -108,11 +256,7 @@ let createNetwork = function() {
 // Create and return device
 let createDevice = function(deviceData) {
   let newDevice = new wappsto.models.Device();
-  // If a device is not reachable it will be skipped
-  if (deviceData.reachable === false) {
-    unreacheableDevices.push(deviceData.module_name);
-    return null;
-  }
+
   // Device type is used to differentiate between the Main Module and the other modules
   // Thus the right attributes can be set for each case
   if (deviceData.type === "NAMain") {
@@ -155,8 +299,10 @@ let createValue = function(dataType, device) {
       });
 
       if (newValue) {
-        // get the state data
-        let stateData = device.dashboard_data[value.param];
+        // if the device is unreachable then device.dashboard_data will be missing
+        let stateData = device.dashboard_data
+          ? device.dashboard_data[value.param]
+          : 0;
         // all the value permissions are of type Report
         let reportState = createState("Report", stateData);
 
@@ -175,15 +321,15 @@ let createState = function(type, data) {
 
   newState.set({
     type: type,
-    data: data + "",
-    timestamp: timestamp + ""
+    data: data.toString(),
+    timestamp: timestamp
   });
 
   return newState;
 };
 
 // Save network and set update timer
-let saveNetwork = function() {
+function saveNetwork() {
   network.save(
     {},
     {
@@ -192,7 +338,6 @@ let saveNetwork = function() {
         if (updateTimer) {
           clearInterval(updateTimer);
         }
-
         setUpdateTimer();
       },
       error: function(error) {
@@ -200,7 +345,7 @@ let saveNetwork = function() {
       }
     }
   );
-};
+}
 
 // Save and update data to wappsto data model
 let updateWappstoData = function(dataToUpdate) {
@@ -210,81 +355,10 @@ let updateWappstoData = function(dataToUpdate) {
   });
 };
 
-// By default, axios serializes JavaScript objects to JSON.
-// To send data in the application/x-www-form-urlencoded format instead, use querystring to stringify nested objects!
-const querystring = require("querystring");
-
-// Get access token with client credentials grant type - use only for development and testing
-let getAccessToken = function() {
-  axios({
-    method: "POST",
-    headers: {
-      Host: "api.netatmo.com",
-      "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    url: "/oauth2/token",
-    baseURL: "https://api.netatmo.com/",
-    data: querystring.stringify({
-      grant_type: "password",
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      username: config.username,
-      password: config.password,
-      scope: "read_station"
-    })
-  })
-    .then(function(response) {
-      updateWappstoData({
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-        expiresIn: response.data.expires_in
-      });
-
-      getStationData();
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-};
-
-// Send request to refresh token and update tokens with new values
-let getRefreshToken = function() {
-  let refreshToken = data.get("refreshToken");
-
-  axios({
-    method: "POST",
-    headers: {
-      Host: "api.netatmo.com",
-      "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    url: "/oauth2/token",
-    baseURL: "https://api.netatmo.com/",
-    data: querystring.stringify({
-      grant_type: "refresh_token",
-      refresh_token: refreshToken,
-      client_id: config.clientId,
-      client_secret: config.clientSecret
-    })
-  })
-    .then(function(response) {
-      updateWappstoData({
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-        expiresIn: response.data.expires_in
-      });
-
-      getStationData();
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-};
-
 // Use device data to create device, values and state and then add device to the network
 let addDevicesToNetwork = function(deviceData) {
   deviceData.forEach(function(device) {
     let deviceToAdd = createDevice(device);
-
     if (deviceToAdd) {
       let deviceDataTypes = device.data_type;
 
@@ -298,61 +372,20 @@ let addDevicesToNetwork = function(deviceData) {
   });
 };
 
-// Get the users station data
-let getStationData = function() {
-  let accessToken = data.get("accessToken");
-
-  if (!accessToken) {
-    getAccessToken();
-  }
-
-  axios({
-    method: "GET",
-    headers: {
-      Host: "api.netatmo.com",
-      Authorization: "Bearer " + accessToken
-    },
-    url: "/getstationsdata",
-    baseURL: "https://api.netatmo.com/api/",
-    data: querystring.stringify({
-      device_id: config.deviceId,
-      get_favorites: false
-    })
-  })
-    .then(function(response) {
-      // Data of the Main Module - every station has this device
-      let deviceData = response.data.body.devices;
-      // Saving station name to display in the FG
-      let stationName = deviceData[0].station_name;
-
-      if (data.get("stationName") !== stationName) {
-        updateWappstoData({ stationName: stationName });
-      }
-
-      addDevicesToNetwork(deviceData);
-      // Data of the modules associated with the Main Module
-      let moduleData = response.data.body.devices[0].modules;
-
-      addDevicesToNetwork(moduleData);
-      // Saving network
-      saveNetwork();
-      // Save unreachable devices if any
-      if (unreacheableDevices.length > 0) {
-        updateWappstoData({
-          status_message: statusMessage.success_retrieve_wappsto_data,
-          lostDevices: unreacheableDevices
-        });
-      } else {
-        updateWappstoData({
-          status_message: statusMessage.success_retrieve_wappsto_data
-        });
-      }
-    })
-    .catch(function(error) {
+// Refresh tokens if unable to get station data
+let refreshTokens = function(callback) {
+  netatmo
+    .getRefreshToken(data.get("refreshToken"))
+    .then(response => {
       updateWappstoData({
-        status_message: statusMessage.error_retrieve_wappsto_data
+        accessToken: response.data.access_token,
+        refreshToken: response.data.refresh_token,
+        expiresIn: response.data.expires_in
       });
-
-      getRefreshToken();
+      // Execute callback
+      callback();
+    })
+    .catch(error => {
+      console.log("Could not refresh tokens: " + error);
     });
 };
