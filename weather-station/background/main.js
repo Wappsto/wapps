@@ -4,16 +4,13 @@ const netatmo = require("./netatmo");
 
 const wappsto = new Wappsto();
 
-const wappstoConsole = require("wapp-api/console");
-wappstoConsole.start();
-
 let network, data;
 // Timer used for updating data
 let updateTimer;
 // 5 min
 let timeInterval = 300000;
 
-let statusMessage = {
+const statusMessage = {
   success_convert_netatmo_data:
     "Succesfully converted Netatmo data to Wappsto UDM",
   error_convert_wappsto_data: "Failed to convert Wappsto data",
@@ -21,65 +18,65 @@ let statusMessage = {
   error_update_wappsto_data: "Failed to update Wappsto data"
 };
 
-let getData = async () => {
-  try {
-    let collection = await wappsto.get(
-      "data",
-      {},
-      {
-        expand: 1,
-        subscribe: true
-      }
-    );
-    return collection;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-getData()
+wappsto
+  .get(
+    "data",
+    {},
+    {
+      expand: 1,
+      subscribe: true
+    }
+  )
   .then(collection => {
     data = collection.first();
 
-    if (!data.get("accessToken")) {
-      netatmo.getAccessToken().then(response => {
-        updateWappstoData({
-          accessToken: response.data.access_token,
-          refreshToken: response.data.refresh_token,
-          expiresIn: response.data.expires_in
-        }).catch(error => {
-          console.log("Could not get access token: " + error);
-        });
-
+    if (data) {
+      if (!data.get("accessToken")) {
+        netatmo
+          .getAccessToken()
+          .then(response => {
+            if (response) {
+              data.save(
+                {
+                  accessToken: response.data.access_token,
+                  refreshToken: response.data.refresh_token,
+                  expiresIn: response.data.expires_in
+                },
+                {
+                  patch: true,
+                  success: () => {
+                    startWapp();
+                  },
+                  error: () => {
+                    console.log("Error saving access tokens to Wappsto data..");
+                  }
+                }
+              );
+            }
+          })
+          .catch(error => {
+            console.log(`Could not get access token: ${error}`);
+          });
+      } else {
         startWapp();
-      });
-    } else {
-      startWapp();
+      }
     }
   })
   .catch(error => {
-    console.log(error);
+    console.log(`Could not get Wappsto data: ${error}`);
   });
 
-let getNetwork = async () => {
-  try {
-    let collection = await wappsto.get(
+// If the Netatmo Weather Station network does not already exist, start the conversion process
+const startWapp = () => {
+  wappsto
+    .get(
       "network",
       { name: "Netatmo Weather Station" },
       {
         expand: 5,
         subscribe: true
       }
-    );
-    return collection;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// If the Netatmo Weather Station network does not already exist, start the conversion process
-let startWapp = function() {
-  getNetwork()
+    )
     .then(collection => {
       if (collection.length > 0) {
         network = collection.first();
@@ -98,7 +95,7 @@ let startWapp = function() {
             }
           })
           .catch(error => {
-            console.log("Could not get station data: " + error);
+            console.log(`Could not get station data: ${error}`);
 
             updateWappstoData({
               status_message: statusMessage.error_convert_wappsto_data
@@ -107,12 +104,12 @@ let startWapp = function() {
       }
     })
     .catch(error => {
-      console.log("Could not get Netatmo Weather Station network: " + error);
+      console.log(`Could not get Netatmo Weather Station network: ${error}`);
     });
 };
 
 // Convert the users data from the Netatmo API into the Wappsto UDM
-let convertNetatmoDataToWappstoUDM = function(response) {
+const convertNetatmoDataToWappstoUDM = response => {
   // Create the Netatmo Weather Station network
   network = createNetwork();
   // Data of the Main Module - every station has this device
@@ -138,8 +135,7 @@ let convertNetatmoDataToWappstoUDM = function(response) {
 };
 
 // Update station data
-let updateStationData = function() {
-  console.log("updating..");
+const updateStationData = () => {
   // Clear update timer
   if (updateTimer) {
     clearInterval(updateTimer);
@@ -231,21 +227,23 @@ let updateStationData = function() {
       updateWappstoData({
         status_message: statusMessage.error_update_wappsto_data
       });
+
+      refreshTokens(updateStationData);
     });
 };
 
 // Set timer used to update station data
-let setUpdateTimer = function() {
+const setUpdateTimer = () => {
   if (updateTimer) {
     clearInterval(updateTimer);
   }
-  updateTimer = setInterval(function() {
+  updateTimer = setInterval(() => {
     updateStationData();
   }, timeInterval);
 };
 
 // Create and return network
-let createNetwork = function() {
+const createNetwork = () => {
   let newNetwork = new wappsto.models.Network();
 
   newNetwork.set("name", networkInfo.name);
@@ -254,7 +252,7 @@ let createNetwork = function() {
 };
 
 // Create and return device
-let createDevice = function(deviceData) {
+const createDevice = deviceData => {
   let newDevice = new wappsto.models.Device();
 
   // Device type is used to differentiate between the Main Module and the other modules
@@ -278,10 +276,10 @@ let createDevice = function(deviceData) {
 };
 
 // Create and return device value
-let createValue = function(dataType, device) {
+const createValue = (dataType, device) => {
   let newValue = new wappsto.models.Value();
 
-  networkInfo.device[0].value.forEach(function(value) {
+  networkInfo.device[0].value.forEach(value => {
     if (value.param === dataType) {
       newValue.set({
         name: value.name,
@@ -314,7 +312,7 @@ let createValue = function(dataType, device) {
 };
 
 // Create and return value state
-let createState = function(type, data) {
+const createState = (type, data) => {
   let newState = new wappsto.models.State();
 
   let timestamp = new Date().toISOString();
@@ -329,40 +327,43 @@ let createState = function(type, data) {
 };
 
 // Save network and set update timer
-function saveNetwork() {
+const saveNetwork = () => {
   network.save(
     {},
     {
       subscribe: true,
-      success: function() {
+      success: () => {
         if (updateTimer) {
           clearInterval(updateTimer);
         }
         setUpdateTimer();
       },
-      error: function(error) {
+      error: error => {
         console.log(error);
       }
     }
   );
-}
+};
 
 // Save and update data to wappsto data model
-let updateWappstoData = function(dataToUpdate) {
+const updateWappstoData = dataToUpdate => {
   data.set(dataToUpdate);
   data.save(dataToUpdate, {
-    patch: true
+    patch: true,
+    error: () => {
+      console.log("Error saving Wappsto data..");
+    }
   });
 };
 
 // Use device data to create device, values and state and then add device to the network
-let addDevicesToNetwork = function(deviceData) {
-  deviceData.forEach(function(device) {
+const addDevicesToNetwork = deviceData => {
+  deviceData.forEach(device => {
     let deviceToAdd = createDevice(device);
     if (deviceToAdd) {
       let deviceDataTypes = device.data_type;
 
-      deviceDataTypes.forEach(function(dataType) {
+      deviceDataTypes.forEach(dataType => {
         let valueToAdd = createValue(dataType, device);
 
         deviceToAdd.get("value").push(valueToAdd);
@@ -373,17 +374,29 @@ let addDevicesToNetwork = function(deviceData) {
 };
 
 // Refresh tokens if unable to get station data
-let refreshTokens = function(callback) {
+const refreshTokens = callback => {
   netatmo
     .getRefreshToken(data.get("refreshToken"))
     .then(response => {
-      updateWappstoData({
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-        expiresIn: response.data.expires_in
-      });
-      // Execute callback
-      callback();
+      if (response) {
+        data.save(
+          {
+            accessToken: response.data.access_token,
+            refreshToken: response.data.refresh_token,
+            expiresIn: response.data.expires_in
+          },
+          {
+            patch: true,
+            success: () => {
+              // Execute callback
+              callback();
+            },
+            error: () => {
+              console.log("Error saving access tokens to Wappsto data..");
+            }
+          }
+        );
+      }
     })
     .catch(error => {
       console.log("Could not refresh tokens: " + error);

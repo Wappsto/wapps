@@ -4,73 +4,58 @@ const axios = require("axios");
 // To send data in the application/x-www-form-urlencoded format instead, use querystring to stringify nested objects!
 const querystring = require("querystring");
 // Get access token with client credentials grant type - use only for development and testing
-let getAccessToken = async () => {
-  try {
-    let response = await axios({
-      method: "POST",
-      headers: {
-        Host: "api.netatmo.com",
-        "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
-      },
-      url: "/oauth2/token",
-      baseURL: "https://api.netatmo.com/",
-      data: querystring.stringify({
-        grant_type: "password",
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        username: config.username,
-        password: config.password,
-        scope: "read_station"
-      })
-    });
-    return response;
-  } catch (error) {
-    console.log(error);
-  }
+const getAccessToken = () => {
+  return axios({
+    method: "POST",
+    headers: {
+      Host: "api.netatmo.com",
+      "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+    },
+    url: "/oauth2/token",
+    baseURL: "https://api.netatmo.com/",
+    data: querystring.stringify({
+      grant_type: "password",
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      username: config.username,
+      password: config.password,
+      scope: "read_station"
+    })
+  });
 };
 
-let getRefreshToken = async refreshToken => {
-  try {
-    let response = await axios({
-      method: "POST",
-      headers: {
-        Host: "api.netatmo.com",
-        "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
-      },
-      url: "/oauth2/token",
-      baseURL: "https://api.netatmo.com/",
-      data: querystring.stringify({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-        client_id: config.clientId,
-        client_secret: config.clientSecret
-      })
-    });
-    return response;
-  } catch (error) {
-    console.log(error);
-  }
+const getRefreshToken = refreshToken => {
+  return axios({
+    method: "POST",
+    headers: {
+      Host: "api.netatmo.com",
+      "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+    },
+    url: "/oauth2/token",
+    baseURL: "https://api.netatmo.com/",
+    data: querystring.stringify({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: config.clientId,
+      client_secret: config.clientSecret
+    })
+  });
 };
 
-let getStationData = async accessToken => {
-  try {
-    let response = await axios({
-      method: "GET",
-      headers: {
-        Host: "api.netatmo.com",
-        Authorization: "Bearer " + accessToken
-      },
-      url: "/getstationsdata",
-      baseURL: "https://api.netatmo.com/api/",
-      data: querystring.stringify({
-        device_id: config.deviceId,
-        get_favorites: false
-      })
-    });
-    return response;
-  } catch (error) {
-    return null;
-  }
+const getStationData = accessToken => {
+  return axios({
+    method: "GET",
+    headers: {
+      Host: "api.netatmo.com",
+      Authorization: "Bearer " + accessToken
+    },
+    url: "/getstationsdata",
+    baseURL: "https://api.netatmo.com/api/",
+    data: querystring.stringify({
+      device_id: config.deviceId,
+      get_favorites: false
+    })
+  });
 };
 
 module.exports = {
