@@ -1,11 +1,14 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title> Netatmo Weather Station Converter</title>
     <!-- Load Wapp API -->
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"
     ></script>
+    <!-- Load Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <!-- Load custom JavaScript -->
     <script type="text/javascript" src="index.js"></script>
     <!-- Load Font Awesome icons -->
@@ -20,24 +23,19 @@
   </head>
 
   <body>
-    <article>
-      <header>
-        <h1>Netatmo Weather Station Converter</h1>
-        <p>
-          This Wapp converts your Netatmo Weather Station data into the Wappsto
-          Unified Data Model (UDM).
-        </p>
-      </header>
-      <section>
-        <h4>
-          Status
-        </h4>
-        <div id="statusId">Waiting for status update..</div>
-      </section>
-      <section>
-        <h4 id="stationId"></h4>
-        <div id="stationData"></div>
-      </section>
-    </article>
+    <header id="primary-header">
+      <h1>Netatmo Weather Station Converter</h1>
+      <div id="status-indicator">
+        <div id="circle" class="tooltip">
+          <span id="detailed-status" class="tooltiptext">
+            Please wait for status update..
+          </span>
+        </div>
+        <p id="short-status"> Pending </p>
+      </div>
+    </header>
+    <main>
+      <section id="data-container"></section>
+    </main>
   </body>
 </html>

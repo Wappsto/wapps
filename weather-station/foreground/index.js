@@ -1,159 +1,126 @@
-let wappsto = new Wappsto();
-let data, network;
-let devices = [];
-
-let showStatus;
-let stationName;
-let stationData;
+const wappsto = new Wappsto();
 
 window.onload = () => {
-  showStatus = document.getElementById("statusId");
-  stationName = document.getElementById("stationId");
-  stationData = document.getElementById("stationData");
-
   wappsto.get(
     "data",
     {},
     {
       expand: 1,
       subscribe: true,
-      success: function(collection) {
-        data = collection.first();
-
-        getNetwork();
-
-        data.on("change", function() {
-          getNetwork();
+      success: collection => {
+        const data = collection.first();
+        
+        if(data) {
+          displayStatus(data);
+        }
+        
+        data.on("change", () => {
+          displayStatus(data);
         });
       },
-      error: function(error) {
+      error: error => {
         console.log(error);
       }
     }
   );
 };
 
-let getNetwork = function() {
+const displayStatus = wappstoData => {
+  const circle = document.getElementById("circle");
+  const detailedStatus = document.getElementById("detailed-status");
+  const shortStatus = document.getElementById("short-status");
+  
+  if(wappstoData.get("status_message")) {
+    const status = wappstoData.get("status_message");
+    detailedStatus.textContent = "";
+    shortStatus.textContent = "";
+    
+    if(status === "Succesfully converted Netatmo data to Wappsto UDM" || 
+       status === "Succesfully updated Wappsto data") {
+      shortStatus.textContent = "OK";
+      circle.style.backgroundColor = "green";
+      // When the status is success then get and display the network data 
+      getNetwork();
+    }
+    
+    if(status === "Failed to convert Wappsto data" || 
+       status === "Failed to update Wappsto data") {
+      shortStatus.textContent = "Error";
+      circle.style.backgroundColor = "red";
+    }
+    detailedStatus.textContent = status;
+  }
+};
+
+const getNetwork = () => {
   wappsto.get(
     "network",
     { name: "Netatmo Weather Station" },
     {
       expand: 5,
       subscribe: true,
-      success: function(collection) {
-        if (collection.length > 0) {
-          network = collection.first();
+      success: collection => {
+        const network = collection.first();
 
-          devices = network.get("device");
-
-          updateData();
-        } else {
-          showStatus.innerHTML =
-            "<p class='failure'> Could not find Netatmo Weather Station network </p>";
-          stationName.innerHTML = "";
-          stationData.innerHTML = "";
+        if(network) {
+          displayNetworkData(network);
         }
       },
-      error: function(error) {
+      error: error => {
         console.log(error);
       }
     }
   );
 };
 
-let updateData = function() {
-  showStatus.innerHTML = "";
-  status = data.get("status_message");
-  showStatus.innerHTML = status + "";
+const displayNetworkData = networkToDisplay => {
+  const dataContainer = document.getElementById("data-container");
+  const devices = networkToDisplay.get("device");
+  // Clear the container 
+  dataContainer.innerHTML = "";
+  
+  devices.forEach(device => {
+    const values = device.get("value");
+    
+    values.forEach(value => {
+      const valueHeader = `<header>
+			<h2> ${value.get("name")} </h2>
+			<small> ${device.get("name")} </small>
+		</header>`;
+      
+      let valueIcon;
+      
+      switch(value.get("name")) {
+        case "CO2": 
+          valueIcon = "<i class='fab fa-envira'></i>";
+          break;
+        case "Temperature": 
+          valueIcon = "<i class='fas fa-thermometer-three-quarters'></i>";
+          break;
+        case "Humidity": 
+          valueIcon = "<i class='fas fa-tint'></i>";
+          break;
+        case "Noise": 
+          valueIcon = "<i class='fas fa-music'></i>";
+          break;
+        case "Pressure": 
+          valueIcon = "<i class='fas fa-tachometer-alt'></i>";
+          break;
+        default: 
+          valueIcon = "<i class='fas fa-check-circle'></i>";
+      }
+      
+      const stateData = `<p id="state-data"> ${value.get("state").at(0).get("data")} </p>`;
 
-  if (
-    status === "Failed to convert Wappsto data" ||
-    status === "Failed to update Wappsto data"
-  ) {
-    showStatus.innerHTML = "<p class='failure'> " + status + "</p>";
-  }
+      const stateUnit = `<p id="state-unit"> ${ value.get("number") ? value.get("number").unit : ""} </p>`;
 
-  if (
-    status === "Succesfully converted Netatmo data to Wappsto UDM" ||
-    status === "Succesfully updated Wappsto data"
-  ) {
-    showStatus.innerHTML = "<p class='success'> " + status + "</p>";
-    stationName.innerHTML = "";
-    stationName.innerHTML = data.get("stationName") + " Station";
-    stationData.innerHTML = "";
-    if (devices) {
-      devices.forEach(function(device) {
-        stationData.innerHTML += "<h4> " + device.get("name") + " </h4>";
-        device.get("value").forEach(function(value) {
-          let state = value
-            .get("state")
-            .find({ type: "Report" })
-            .get("data");
+      const timestamp = value.get("state").at(0).get("timestamp");
 
-          let valueName = value.get("name");
-          switch (valueName) {
-            case "Temperature":
-              stationData.innerHTML +=
-                "<p><i class='fas fa-thermometer-three-quarters'></i> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-              break;
-            case "CO2":
-              stationData.innerHTML +=
-                "<p><i class='fab fa-envira'></i> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-              break;
-            case "Humidity":
-              stationData.innerHTML +=
-                "<p><i class='fas fa-tint'></i> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-              break;
-            case "Noise":
-              stationData.innerHTML +=
-                "<p><i class='fas fa-music'></i> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-              break;
-            case "Pressure":
-              stationData.innerHTML +=
-                "<p><i class='fas fa-tachometer-alt'></i> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-              break;
-            default:
-              stationData.innerHTML +=
-                "<p> " +
-                value.get("name") +
-                " : " +
-                state +
-                " " +
-                value.get("number").unit +
-                "</p>";
-          }
-        });
-      });
-    }
-  }
+      const lastUpdated = `<p id="last-updated"> Last updated ${moment(timestamp).fromNow()} </p>`;
+      
+      dataContainer.innerHTML += `<div class="card">
+			${valueHeader} ${valueIcon} ${stateData} ${stateUnit} ${lastUpdated}
+		</div>`;
+    });
+  });
 };
