@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title> Netatmo Weather Station Converter</title>
+    <!-- Load Wapp API -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"
+    ></script>
+    <!-- Load Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <!-- Load custom JavaScript -->
+    <script type="text/javascript" src="index.js"></script>
+    <!-- Load Font Awesome icons -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <!-- Load custom stylesheet -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <header id="primary-header">
+      <h1>Netatmo Weather Station Converter</h1>
+      <div id="status-indicator">
+        <div id="circle" class="tooltip">
+          <span id="detailed-status" class="tooltiptext">
+            Please wait for status update..
+          </span>
+        </div>
+        <p id="short-status"> Pending </p>
+      </div>
+    </header>
+    <main>
+      <section id="data-container"></section>
+    </main>
+  </body>
+</html>

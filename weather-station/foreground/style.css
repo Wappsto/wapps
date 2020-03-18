@@ -1,0 +1,143 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f2f2f2;
+}
+
+#primary-header {
+  background-color: lightblue;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem;
+}
+
+#primary-header h1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#status-indicator {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem;
+}
+
+#circle {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
+  background-color: orange;
+}
+
+/* Custom tooltip - credit to W3Schools https://www.w3schools.com/css/css_tooltip.asp */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 10rem;
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -0.75rem;
+  right: 125%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+#short-status {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+}
+
+main {
+  padding: 1.5rem;
+}
+
+#data-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-gap: 1rem;
+}
+
+.card {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr) 1rem;
+  grid-gap: 0.5rem;
+}
+
+.card header {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+}
+
+.card small {
+  color: #999999;
+}
+
+.card i {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  place-self: center;
+  font-size: 500%;
+  color: lightblue;
+}
+
+#state-data {
+  grid-column: 2;
+  grid-row: 2;
+  place-self: center;
+  font-size: 200%;
+  font-weight: bold;
+  margin-bottom: -1.75rem;
+}
+
+#state-unit {
+  grid-column: 2;
+  grid-row: 3;
+  place-self: center;
+  font-size: 100%;
+  margin-top: -1.25rem;
+  color: #999999;
+}
+
+#last-updated {
+  grid-column: 1 / span 2;
+  grid-row: 4;
+  place-self: left;
+  color: #999999;
+  font-size: 80%;
+}

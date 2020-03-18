@@ -1,0 +1,68 @@
+{
+  "name": "Netatmo Weather Station",
+  "device": [
+    {
+      "name": "Indoor",
+      "description": "Main module - required module in all cases",
+      "manufacturer": "Netatmo",
+      "communication": "always",
+      "value": [
+        {
+          "param": "Temperature",
+          "name": "Temperature",
+          "type": "temperature",
+          "permission": "r",
+          "dataType": "number",
+          "min": "-40",
+          "max": "65",
+          "step": "1",
+          "unit": "C"
+        },
+        {
+          "param": "CO2",
+          "name": "CO2",
+          "type": "CO2",
+          "permission": "r",
+          "dataType": "number",
+          "min": "0",
+          "max": "5000",
+          "step": "1",
+          "unit": "ppm"
+        },
+        {
+          "param": "Humidity",
+          "name": "Humidity",
+          "type": "humidity",
+          "permission": "r",
+          "dataType": "number",
+          "min": "0",
+          "max": "100",
+          "step": "1",
+          "unit": "%"
+        },
+        {
+          "param": "Noise",
+          "name": "Noise",
+          "type": "noise",
+          "permission": "r",
+          "dataType": "number",
+          "min": "35",
+          "max": "120",
+          "step": "1",
+          "unit": "dB"
+        },
+        {
+          "param": "Pressure",
+          "name": "Pressure",
+          "type": "pressure",
+          "permission": "r",
+          "dataType": "number",
+          "min": "260",
+          "max": "1260",
+          "step": "1",
+          "unit": "mbar"
+        }
+      ]
+    }
+  ]
+}
