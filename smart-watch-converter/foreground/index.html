@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Fitbit Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wapp-api@latest/browser/wapp-api.js"></script>
+    <script src="index.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <header id="primary-header">
+      <h1>Fitbit Converter</h1>
+      <div id="status-indicator">
+        <div id="circle" class="tooltip">
+          <span id="detailed-status" class="tooltiptext">
+            Please wait for status update..
+          </span>
+        </div>
+        <p id="short-status"> Pending </p>
+      </div>
+    </header>
+    <main class="container">
+      <section id="login-container">
+        <button type="button" id="login-button" onclick="openFitbitAuthPage()">Fitbit Login</button>
+      </section>
+      <section id="data-container"></section>
+      <section id="sleep-logs-container">
+        <header>
+          <h1>Sleep stage</h1>
+        </header>
+        <section id="radio-buttons-container">
+          <label class="radio-container" for="sleep-logs-choice1">
+            Today
+            <input type="radio" id="sleep-logs-choice1" value="today" checked="checked" name="sleep-interval" />
+            <span class="checkmark"></span>
+          </label>
+          <label class="radio-container" for="sleep-logs-choice2"
+            >Last 3 days
+            <input type="radio" id="sleep-logs-choice2" value="last-three-days" name="sleep-interval" />
+            <span class="checkmark"></span>
+          </label>
+          <label class="radio-container" for="sleep-logs-choice3"
+            >Last week
+            <input type="radio" id="sleep-logs-choice3" value="last-week" name="sleep-interval" />
+            <span class="checkmark"></span>
+          </label>
+        </section>
+        <section id="chart-container">
+          <canvas id="sleep-canvas"></canvas>
+        </section>
+        <p id="last-updated-sleep"></p>
+      </section>
+    </main>
+  </body>
+</html>

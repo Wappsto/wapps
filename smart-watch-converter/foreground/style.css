@@ -1,0 +1,475 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f2f2f2;
+}
+
+#primary-header {
+  padding: 1.5rem;
+  background-color: teal;
+  color: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem;
+}
+
+#primary-header h1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#status-indicator {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem;
+}
+
+#circle {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
+  background-color: orange;
+}
+
+#short-status {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+}
+
+/* Custom tooltip - credit to W3Schools https://www.w3schools.com/css/css_tooltip.asp */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 10rem;
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -0.75rem;
+  right: 125%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+#login-container {
+  display: none;
+}
+
+#login-button {
+  background-color: #ffffff;
+  padding: 0.75rem 1rem;
+  border: solid 0.1rem #999;
+  border-radius: 0.75rem;
+  font-size: 110%;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#login-button:hover {
+  background-color: #999;
+}
+
+main {
+  margin: 1.5rem;
+}
+
+#data-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-gap: 1rem;
+}
+
+.value-card {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr) 1rem;
+  grid-gap: 0.5rem;
+}
+
+.value-card header {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+}
+
+.value-card header small {
+  color: #999999;
+}
+
+.value-card i {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  place-self: center;
+  font-size: 500%;
+  color: teal;
+}
+
+#state-data {
+  grid-column: 2;
+  grid-row: 2;
+  place-self: center;
+  font-size: 200%;
+  font-weight: bold;
+  margin-bottom: -1.75rem;
+}
+
+#state-unit {
+  grid-column: 2;
+  grid-row: 3;
+  place-self: center;
+  color: #999999;
+  font-size: 100%;
+  margin-top: -1.25rem;
+}
+
+#last-updated {
+  grid-column: 1 / span 2;
+  grid-row: 4;
+  place-self: left;
+}
+
+#sleep-logs-container {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+#radio-buttons-container {
+  margin: 1.5rem 0;
+}
+
+/* Custom radio buttons - credit to W3Schools https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
+/* The container */
+.radio-container {
+  display: inline-block;
+  position: relative;
+  padding-left: 1.5rem;
+  margin: 0.5rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.2rem;
+  width: 1.2rem;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.radio-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a teal background */
+.radio-container input:checked ~ .checkmark {
+  background-color: teal;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio-container .checkmark:after {
+  top: 0.45rem;
+  left: 0.45rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: white;
+}
+
+#chart-container {
+  position: relative;
+  width: 100%;
+  height: 25%;
+}
+
+#last-updated-sleep {
+  margin-top: 1rem;
+}
+
+#last-updated,
+#last-updated-sleep {
+  color: #999999;
+  font-size: 80%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f2f2f2;
+}
+
+#primary-header {
+  padding: 1.5rem;
+  background-color: teal;
+  color: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) 2rem;
+  grid-gap: 0.5rem;
+}
+
+#primary-header h1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#wapp-status {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
+  background-color: orange;
+}
+
+#short-status-message {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+}
+
+/* Custom tooltip - credit to W3Schools https://www.w3schools.com/css/css_tooltip.asp */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 10rem;
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -0.75rem;
+  right: 125%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+main {
+  margin: 1.5rem;
+}
+
+#data-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-gap: 1rem;
+}
+
+.value-card {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr) 1rem;
+  grid-gap: 0.5rem;
+}
+
+.value-card header {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+}
+
+.value-card i {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  place-self: center;
+  font-size: 500%;
+  color: teal;
+}
+
+#state-data {
+  grid-column: 2;
+  grid-row: 2;
+  place-self: center;
+  font-size: 200%;
+  font-weight: bold;
+  margin-bottom: -1.75rem;
+}
+
+#state-unit {
+  grid-column: 2;
+  grid-row: 3;
+  place-self: center;
+  font-size: 100%;
+  margin-top: -1.25rem;
+}
+
+#last-updated {
+  grid-column: 1 / span 2;
+  grid-row: 4;
+  place-self: left;
+}
+
+#sleep-logs-container {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+#radio-buttons-container {
+  margin: 1.5rem 0;
+}
+
+/* Custom radio buttons - credit to W3Schools https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
+/* The container */
+.radio-container {
+  display: inline-block;
+  position: relative;
+  padding-left: 1.5rem;
+  margin: 0.5rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.2rem;
+  width: 1.2rem;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.radio-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a teal background */
+.radio-container input:checked ~ .checkmark {
+  background-color: teal;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio-container .checkmark:after {
+  top: 0.45rem;
+  left: 0.45rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: white;
+}
+
+#chart-container {
+  position: relative;
+  width: 100%;
+  height: 25%;
+}
+
+#last-updated-sleep {
+  margin-top: 1rem;
+}
+
+#last-updated,
+#last-updated-sleep {
+  color: #999999;
+  font-size: 80%;
+}
