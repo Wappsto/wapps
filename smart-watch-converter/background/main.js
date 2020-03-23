@@ -82,12 +82,16 @@ const startWapp = () => {
       streamdata.forEach(message => {
         if (message.meta_object.type === "extsync") {
           let query = JSON.parse(message.extsync.body);
-          query = query.search;
-          query = query.split("&");
           let queryObj = {};
-          for (let i = 0; i < query.length; i++) {
-            let str = query[i].split("=");
-            queryObj[str[0]] = str[1];
+          if (query) {
+            query = query.search;
+            if (query) {
+              query = query.split("&");
+              for (let i = 0; i < query.length; i++) {
+                let str = query[i].split("=");
+                queryObj[str[0]] = str[1];
+              }
+            }
           }
           if (queryObj.code) {
             auth
