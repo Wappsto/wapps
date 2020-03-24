@@ -8,10 +8,10 @@ h3 {
   margin-top: 25px;
 }
 
-
 /* Style the boxes: */
-.sensors > .grid-x > .cell, .led > .grid-x > .cell {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.sensors > .grid-x > .cell,
+.led > .grid-x > .cell {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-bottom: 3px solid white;
   background: white;
   text-align: center;
@@ -23,7 +23,8 @@ h3 {
   min-height: 290px;
 }
 
-.sensors > .grid-x > .cell:hover, .led > .grid-x > .cell:hover {
+.sensors > .grid-x > .cell:hover,
+.led > .grid-x > .cell:hover {
   /* Show box bottom line on hover: */
   border-bottom: 3px solid #7366f0;
 }
@@ -31,7 +32,7 @@ h3 {
 .sensors > .grid-x > .cell:hover {
   /* Box hover annimation efect: */
   transform: translateY(-8px) !important;
-  box-shadow: 0 1rem 3rem rgba(31,45,61,.125) !important;
+  box-shadow: 0 1rem 3rem rgba(31, 45, 61, 0.125) !important;
 }
 
 .sensors > .grid-x .type {
@@ -62,36 +63,35 @@ time {
   outline: none;
 }
 
-
 /* Overwrite the default Slider style: */
 .iro__slider {
   display: none !important;
 }
 
-#roundSlider .rs-range-color  {
-  background-color: #33B5E5;
+#roundSlider .rs-range-color {
+  background-color: #33b5e5;
 }
 
-#roundSlider .rs-path-color  {
-  background-color: #C2E9F7;
+#roundSlider .rs-path-color {
+  background-color: #c2e9f7;
 }
 
-#roundSlider .rs-handle  {
-  background-color: #C2E9F7;
+#roundSlider .rs-handle {
+  background-color: #c2e9f7;
   padding: 7px;
-  border: 2px solid #C2E9F7;
+  border: 2px solid #c2e9f7;
 }
 
-#roundSlider .rs-handle.rs-focus  {
-  border-color: #33B5E5;
+#roundSlider .rs-handle.rs-focus {
+  border-color: #33b5e5;
 }
 
-#roundSlider .rs-handle:after  {
-  border-color: #33B5E5;
-  background-color: #33B5E5;
+#roundSlider .rs-handle:after {
+  border-color: #33b5e5;
+  background-color: #33b5e5;
 }
 
-#roundSlider .rs-border  {
+#roundSlider .rs-border {
   border-color: transparent;
 }
 
@@ -104,9 +104,8 @@ time {
 }
 
 #roundSlider .rs-tooltip-text::after {
-  content: ' %';
+  content: " %";
 }
-
 
 /* Style the "Panel" box icons: */
 .panel-icons > .cell {
@@ -130,10 +129,9 @@ time {
   margin: 30px 0;
 }
 
-
 /* Style the "Switch brightness" button: */
 .ks-cboxtags label {
-  border: 2px solid rgba(139, 139, 139, .3);
+  border: 2px solid rgba(139, 139, 139, 0.3);
   color: #adadad;
   border-radius: 25px;
   white-space: nowrap;
@@ -144,7 +142,7 @@ time {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .ks-cboxtags label {
@@ -180,4 +178,28 @@ time {
 .ks-cboxtags input[type="checkbox"] {
   position: absolute;
   opacity: 0;
+}
+
+#temp-CO2-icon {
+  display: inline-block;
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+#temp-icon,
+#CO2-icon {
+  font-size: 50%;
+}
+
+#CO2-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#temp-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
