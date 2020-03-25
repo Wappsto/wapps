@@ -22,7 +22,7 @@
             Please wait for status update..
           </span>
         </div>
-        <p id="short-status"> Pending </p>
+        <p id="short-status">Pending</p>
       </div>
     </header>
     <main class="container">
@@ -32,24 +32,12 @@
       <section id="data-container"></section>
       <section id="sleep-logs-container">
         <header>
-          <h1>Sleep stage</h1>
+          <h1>Sleep stages</h1>
         </header>
-        <section id="radio-buttons-container">
-          <label class="radio-container" for="sleep-logs-choice1">
-            Today
-            <input type="radio" id="sleep-logs-choice1" value="today" checked="checked" name="sleep-interval" />
-            <span class="checkmark"></span>
-          </label>
-          <label class="radio-container" for="sleep-logs-choice2"
-            >Last 3 days
-            <input type="radio" id="sleep-logs-choice2" value="last-three-days" name="sleep-interval" />
-            <span class="checkmark"></span>
-          </label>
-          <label class="radio-container" for="sleep-logs-choice3"
-            >Last week
-            <input type="radio" id="sleep-logs-choice3" value="last-week" name="sleep-interval" />
-            <span class="checkmark"></span>
-          </label>
+        <section class="button-group">
+          <button type="button" onclick="selectSleepInterval('today')">Today</button>
+          <button type="button" onclick="selectSleepInterval('last-three-days')">Last 3 days</button>
+          <button type="button" onclick="selectSleepInterval('last-week')">Last week</button>
         </section>
         <section id="chart-container">
           <canvas id="sleep-canvas"></canvas>

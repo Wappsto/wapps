@@ -15,14 +15,18 @@ const createDevice = (wappstoInstance, deviceType) => {
   if (wappstoInstance && deviceType) {
     let newDevice = new wappstoInstance.models.Device();
     switch (deviceType.toLowerCase()) {
-      case "dashboard":
-        newDevice.set("name", "Dashboard");
+      case "activity":
+        newDevice.set("name", "Activity");
+        newDevice.set("description", "Device representing Fitbit activities");
         break;
-      case "sleep stage":
-        newDevice.set("name", "Sleep stage");
+      case "sleep stages":
+        newDevice.set("name", "Sleep stages");
+        newDevice.set("description", "Device representing Fitbit sleep stages");
         break;
     }
     newDevice.set("manufacturer", "Fitbit Converter");
+    newDevice.set("version", "1.0");
+    newDevice.set("product", "FitbitCharge3");
     return newDevice;
   }
   return null;
@@ -78,6 +82,9 @@ const createValue = (wappstoInstance, valueType, valueData) => {
         break;
       case "sleep":
         let name = valueData.level;
+        if(name === "wake") {
+          name = "awake"
+        }
         newValue.set("name", name === "rem" ? name.toUpperCase() : name.replace(/^./, name[0].toUpperCase()));
         newValue.set("type", "time");
         newValue.set("permission", "r");

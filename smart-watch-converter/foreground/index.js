@@ -101,7 +101,7 @@ const displayNetworkData = networkToDisplay => {
       value.get("type") !== "rem" &&
       value.get("type") !== "light" &&
       value.get("type") !== "deep" &&
-      value.get("type") !== "wake"
+      value.get("type") !== "awake"
     ) {
       let valueHeader = `<header><h2>${value.get("name")}</h2><small>${device.get("name")}</small></header>`;
 
@@ -165,7 +165,7 @@ const getNetwork = () => {
 
 const displaySleepStagesData = networkToDisplay => {
   // Default start time is 'today'
-  defaultStartDate = selectSleepInterval("today");
+  defaultStartDate = "today";
   // Display sleep logs container
   document.getElementById("sleep-logs-container").style.display = "block";
 
@@ -182,25 +182,20 @@ const displaySleepStagesData = networkToDisplay => {
 
   // Get sleep log data to populate the chart with
   if (selectedStartDate) {
-    retrieveSleepLogs(selectedStartDate);
+    selectSleepInterval(selectedStartDate);
   } else {
-    retrieveSleepLogs(defaultStartDate);
-  }
-
-  let radios = document.getElementById("radio-buttons-container").getElementsByTagName("input");
-  // Add onclick listeners to all the radio inputs
-  for (let i = 0; i < radios.length; i++) {
-    radios[i].onclick = function() {
-      selectedStartDate = selectSleepInterval(this.value);
-      // Get sleep log data using start date provided by user
-      retrieveSleepLogs(selectedStartDate);
-    };
+    selectSleepInterval(defaultStartDate);
   }
 };
 
 // Return string date based on the selected user interval
 const selectSleepInterval = selectedSleepInterval => {
   let startDate;
+
+  if (selectedSleepInterval !== defaultStartDate) {
+    selectedStartDate = selectedSleepInterval;
+  }
+
   switch (selectedSleepInterval) {
     case "today":
       startDate = moment()
@@ -222,12 +217,12 @@ const selectSleepInterval = selectedSleepInterval => {
         .subtract(1, "d")
         .toISOString();
   }
-  return startDate;
+  retrieveSleepLogs(startDate);
 };
 
 const retrieveSleepLogs = startDate => {
   let sleepData = [];
-  let sleepStages = ["Wake", "REM", "Light", "Deep"];
+  let sleepStages = ["Awake", "REM", "Light", "Deep"];
 
   for (let i = 0; i < sleepStages.length; i++) {
     getLogsBySleepStage(startDate, sleepStages[i], sleepData);
@@ -341,7 +336,7 @@ const displaySleepChart = sleepData => {
         {
           id: "y-axis",
           type: "category",
-          labels: ["Wake", "REM", "Light", "Deep"]
+          labels: ["Awake", "REM", "Light", "Deep"]
         }
       ]
     }

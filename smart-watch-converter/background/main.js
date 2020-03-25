@@ -127,10 +127,10 @@ const convertToWappstoUDM = () => {
   updateWappstoData({ status_message: wappStatus.warning_convert_data });
   // Create network
   network = util.createNetwork(wappsto);
-  // Create dashboard device
-  let dashboardDevice = util.createDevice(wappsto, "Dashboard");
+  // Create activity device
+  let activityDevice = util.createDevice(wappsto, "Activity");
   // Create sleep stage device
-  let sleepStageDevice = util.createDevice(wappsto, "Sleep stage");
+  let sleepStageDevice = util.createDevice(wappsto, "Sleep stages");
   // Wait for all the needed Fitbit data to be delivered
   axios
     .all([
@@ -157,7 +157,7 @@ const convertToWappstoUDM = () => {
               break;
             case "sleep":
               let sleepData = fitbitSleep.data.sleep[0].levels.data;
-              // Create sleep values of type Wake, Light, REM and Deep
+              // Create sleep values of type Awake, Light, REM and Deep
               for (let i = 0; i < sleepData.length; i++) {
                 let sleepStage = formatSleepStage(sleepData[i].level);
                 // Ensuring that no duplicate sleep values are created
@@ -181,16 +181,16 @@ const convertToWappstoUDM = () => {
               valueToAdd = util.createValue(wappsto, valueType, fitbitFood.data);
               break;
           }
-          // Add new values to Dashboard device
-          if (dashboardDevice) {
+          // Add new values to Activity device
+          if (activityDevice) {
             if (valueToAdd) {
-              dashboardDevice.get("value").push(valueToAdd);
+              activityDevice.get("value").push(valueToAdd);
             }
           }
         });
-        if (dashboardDevice && sleepStageDevice) {
+        if (activityDevice && sleepStageDevice) {
           // Add devices to network
-          network.get("device").push(dashboardDevice);
+          network.get("device").push(activityDevice);
 
           network.get("device").push(sleepStageDevice);
           // Save the new Fitbit Network
@@ -205,6 +205,9 @@ const convertToWappstoUDM = () => {
 };
 
 const formatSleepStage = sleepStage => {
+  if(sleepStage === "wake") {
+    sleepStage = "awake";
+  }
   if (sleepStage === "rem") {
     sleepStage = sleepStage.toUpperCase();
   } else {
@@ -225,7 +228,7 @@ const setUpdateTimer = () => {
 
 // Update value report states
 const updateReportStates = () => {
-  let dashboardDeviceValues = network
+  let activityDeviceValues = network
     .get("device")
     .at(0)
     .get("value");
@@ -252,7 +255,7 @@ const updateReportStates = () => {
 
           switch (valueType) {
             case "calories":
-              valueToUpdate = dashboardDeviceValues.find({
+              valueToUpdate = activityDeviceValues.find({
                 name: "Calories burned"
               });
 
@@ -261,7 +264,7 @@ const updateReportStates = () => {
               newReportData = fitbitFood.data.summary.calories ? fitbitFood.data.summary.calories : "0";
               break;
             case "floors":
-              valueToUpdate = dashboardDeviceValues.find({
+              valueToUpdate = activityDeviceValues.find({
                 name: "Floors"
               });
 
@@ -270,7 +273,7 @@ const updateReportStates = () => {
               newReportData = fitbitActivities.data.summary.floors ? fitbitActivities.data.summary.floors : "0";
               break;
             case "heart rate":
-              valueToUpdate = dashboardDeviceValues.find({
+              valueToUpdate = activityDeviceValues.find({
                 name: "Resting heart rate"
               });
 
@@ -330,14 +333,14 @@ const updateReportStates = () => {
               }
               break;
             case "steps":
-              valueToUpdate = dashboardDeviceValues.find({ name: "Steps" });
+              valueToUpdate = activityDeviceValues.find({ name: "Steps" });
 
               reportState = valueToUpdate.get("state").find({ type: "Report" });
 
               newReportData = fitbitActivities.data.summary.steps ? fitbitActivities.data.summary.steps : "NO_DATA";
               break;
             case "water":
-              valueToUpdate = dashboardDeviceValues.find({ name: "Water" });
+              valueToUpdate = activityDeviceValues.find({ name: "Water" });
 
               reportState = valueToUpdate.get("state").find({ type: "Report" });
 
