@@ -200,7 +200,7 @@ const convertToWappstoUDM = () => {
     )
     .catch(error => {
       console.log(`Error getting Fitbit data: ${error}`);
-      updateWappstoData({ status_message: error_convert_data });
+      updateWappstoData({ status_message: wappStatus.error_convert_data });
     });
 };
 
