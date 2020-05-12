@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Casek: Floor Heating Prototype</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+<body onload="on_load()">
+
+<div id="page_header">
+    <img src="casek_logo.png">
+    <div class="box">
+        <h1>Floor Heating Prototype</h1>
+        <h2>Powered by wappsto and <span class="sm_caps">Uppaal Stratego</span></h2>
+    </div>
+</div>
+
+<form name="house" id="house">
+    <table class="house">
+        <tr>
+            <td style="height: 0.0%" class="no_border"></td>
+            <td style="width: 15.5%" class="no_border"></td>
+            <td style="width: 3.5%" class="no_border"></td>
+            <td style="width: 15.0%" class="no_border"></td>
+            <td style="width: 3.1%" class="no_border"></td>
+            <td style="width: 16.1%" class="no_border"></td>
+            <td style="width: 12.5%" class="no_border"></td>
+            <td style="width: 1.3%" class="no_border"></td>
+            <td style="width: 10.7%" class="no_border"></td>
+            <td style="width: 22.3%" class="no_border"></td>
+        </tr>
+        <tr>
+            <td style="height: 41.6%" class="no_border"></td>
+            <td id="r1">
+                <h1>Bathroom 1</h1>
+                <img class="clock" id="c1" src="clock.svg">
+                <div class="t_current">
+                    <span id="t1">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg1">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b1" src="bat000.svg"/>
+                <img class="flame" id="v1" src="flame.svg"/>
+            </td>
+            <td id="r4" colspan="2">
+                <h1>Room 3</h1>
+                <img class="clock" id="c4" src="clock.svg">
+                <div class="t_current">
+                    <span id="t4">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg4">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b4" src="bat000.svg"/>
+                <img class="flame" id="v4" src="flame.svg"/>
+            </td>
+            <td id="r6" colspan="2">
+                <h1>Kitchen</h1>
+                <img class="clock" id="c6" src="clock.svg">
+                <div class="t_current">
+                    <span id="t6">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg6">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b6" src="bat000.svg"/>
+                <img class="flame" id="v6" src="flame.svg"/>
+            </td>
+            <td id="r7" colspan="2">
+                <h1>Utility</h1>
+                <img class="clock" id="c7" src="clock.svg">
+                <div class="t_current">
+                    <span id="t7">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <img class="battery" id="b7" src="bat000.svg"/>
+                <img class="flame" id="v7" src="flame.svg"/>
+            </td>
+            <td id="r8">
+                <h1>Bathroom 2</h1>
+                <img class="clock" id="c8" src="clock.svg">
+                <div class="t_current">
+                    <span id="t8">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg8">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b8" src="bat000.svg"/>
+                <img class="flame" id="v8" src="flame.svg"/>
+            </td>
+            <td id="r9">
+                <h1>Bedroom</h1>
+                <img class="clock" id="c9" src="clock.svg">
+                <div class="t_current">
+                    <span id="t9">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg9">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b9" src="bat000.svg"/>
+                <img class="flame" id="v9" src="flame.svg"/>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 19.8%" class="no_border"></td>
+            <td id="r5" colspan="4">
+                <h1>Hall</h1>
+                <img class="clock" id="c5" src="clock.svg">
+                <div class="t_current">
+                    <span id="t5">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg5">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b5" src="bat000.svg"/>
+                <img class="flame" id="v5" src="flame.svg"/>
+            </td>
+            <td id="r10" colspan="2" rowspan="2">
+                <h1>Dining Room</h1>
+                <img class="clock" id="c10" src="clock.svg">
+                <div class="t_current">
+                    <span id="t10">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg10">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b10" src="bat000.svg"/>
+                <img class="flame" id="v10" src="flame.svg"/>
+            </td>
+            <td id="r11" colspan="3" rowspan="3">
+                <h1>Living Room</h1>
+                <img class="clock" id="c11" src="clock.svg">
+                <div class="t_current">
+                    <span id="t11">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg11">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b11" src="bat000.svg"/>
+                <img class="flame" id="v11" src="flame.svg"/>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 21.4%" class="no_border"></td>
+            <td id="r2" colspan="2" rowspan="2">
+                <h1>Room 1</h1>
+                <img class="clock" id="c2" src="clock.svg">
+                <div class="t_current">
+                    <span id="t2">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg2">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b2" src="bat000.svg"/>
+                <img class="flame" id="v2" src="flame.svg"/>
+            </td>
+            <td id="r3" colspan="2" rowspan="2">
+                <h1>Room 2</h1>
+                <img class="clock" id="c3" src="clock.svg">
+                <div class="t_current">
+                    <span id="t3">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <div class="target">
+                    <button disabled>&#11014;</button>
+                    <span id="tg3">00</span><span class="t_current_unit">&deg;C</span>
+                    <button disabled>&#11015;</button>
+                </div>
+                <img class="battery" id="b3" src="bat000.svg"/>
+                <img class="flame" id="v3" src="flame.svg"/>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 17.2%" class="no_border"></td>
+            <td id="r0" colspan="2">
+                <h1>Patio</h1>
+                <img class="clock" id="c0" src="clock.svg">
+                <div class="t_current">
+                    <span id="t0">00</span>
+                    <span class="t_current_unit">&deg;C</span>
+                </div>
+                <img class="battery" id="b0" src="bat000.svg"/>
+            </td>
+        </tr>
+    </table>
+    <div id="legend">
+        <img class="flame_legend" src="flame.svg"/>
+        <div>
+            Room selected for heating by <span class="small_caps">Uppaal Stratego</span>
+            (last updated: <span id="c_strategy"></span>).
+        </div>
+    </div>
+</form>
+
+<div id="credits">
+    <h1>Prototype produced by</h1>
+    <img src="seluxit_logo.png"/>
+    <img src="ciss_logo.png"/>
+</div>
+
+<div id="hidden">
+    <img id="bat000" src="bat000.svg"/>
+    <img id="bat020" src="bat020.svg"/>
+    <img id="bat040" src="bat040.svg"/>
+    <img id="bat060" src="bat060.svg"/>
+    <img id="bat080" src="bat080.svg"/>
+    <img id="bat100" src="bat100.svg"/>
+    <img id="attention" src="att.svg">
+    <img id="clock" src="clock.svg">
+</div>
+
+</body>
+
+</html>

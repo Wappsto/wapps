@@ -1,0 +1,210 @@
+
+/* Reset */
+
+* {
+    border-spacing: 0;
+    font-family: Tahoma, Geneva, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Global */
+
+body {
+    background-color: #00b0f2;
+    height: 100%;
+    margin: 3.6vh 2vw;
+    overflow: hidden;
+}
+
+h1 {
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+.sm_caps {
+    font-variant: small-caps;
+}
+
+/* Page Header */
+
+#page_header {
+    margin-bottom: 3.6vh;
+    position: relative;
+    height: 9vh;
+}
+
+#page_header img {
+    max-width: 14vw;
+    max-height: 9vh;
+    margin-right: 2vw;
+}
+
+#page_header .box {
+    background-color: white;
+    border-radius: 25px;
+    height: 100%;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 80vw;
+}
+
+#page_header h1 {
+    font-size: 5vh;
+    font-weight: normal;
+    max-height: 6vh;
+    overflow: hidden;
+}
+
+#page_header h2 {
+    font-size: 1.5vh;
+    font-style: italic;
+    font-weight: normal;
+    max-height: 2vh;
+    overflow: hidden;
+}
+
+/* House Table */
+
+#house {
+    background-color: white;
+    border-radius: 25px;
+    padding: 2vw 2vw 0;
+}
+
+#house table {
+    border-collapse: collapse;
+    height: 42vw;
+    margin: auto;
+    width: 90vw;
+}
+
+#house td {
+    border: 2.8pt solid #666666;
+    color: #007099;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#house td.no_border {
+    border: 0 none black;
+}
+
+#house h1 {
+    color: #007099;
+    font-size: 1.2vw;
+    font-weight: normal;
+    left: 0;
+    margin: 0.2vw;
+    position: absolute;
+    top: 0;
+}
+
+#house #r0 {
+    border-bottom-style: none;
+}
+
+/* House displays */
+
+#house .t_current {
+     font-size: 3.4vw;
+ }
+
+#house .t_current .t_current_unit {
+    font-size: 1.7vw;
+}
+
+#house .battery {
+    bottom: 0;
+    margin: 0.2vw;
+    position: absolute;
+    left: 0;
+    width: 0.8vw;
+}
+
+#house .clock {
+    margin: 0.2vw;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1.2vw;
+}
+
+#house .target {
+    font-size: 1.6vw;
+}
+
+#house .target .t_current_unit {
+    font-size: 0.8vw;
+}
+
+#house .target button{
+    background-color: white;
+    border: #007099 solid 1pt;
+    color: #007099;
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-size: 1.4vw;
+    font-weight: bold;
+    height: 2vw;
+    width: 2vw;
+}
+
+#house .flame {
+    bottom: 0;
+    /*display: none;*/
+    left: 1vw;
+    margin: 0.2vw;
+    position: absolute;
+    width: 1vw;
+}
+
+/* Legend */
+
+#legend {
+    height: 2vw;
+}
+
+#legend div {
+    padding-top: 0.5vw;
+    font-size: 1vw;
+}
+
+#legend .flame_legend {
+    float: left;
+    margin: 0.4vw;
+    width: 1vw;
+}
+
+/* Credits */
+
+#credits {
+    background-color: white;
+    border-left: black solid 1pt;
+    border-radius: 25px 0 0 0;
+    border-top: black solid 1pt;
+    bottom: 0;
+    padding-left: 0.8vw;
+    padding-top: 0.8vw;
+    position: absolute;
+    right: 0;
+}
+
+#credits h1 {
+    font-size: 0.8vw;
+    font-weight: normal;
+    margin-left: 0.6vw;
+}
+
+#credits img {
+    height: 4vh;
+    margin: 0.5vw;
+}
+
+/* Secret stuff */
+
+#hidden {
+    display: none;
+}
