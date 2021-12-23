@@ -11,6 +11,8 @@ var timeInterval= 900000;
 
 wappstoConsole.start();
 
+console.log("Starting Weather Converter");
+
 axios.defaults.headers = {
   "Content-type": "application/json",
   Accept: "application/json",
@@ -40,7 +42,7 @@ function createNetwork() {
   network.set("name", networkInfo.name);
   let place = "Copenhagen";
   axios(
-    "http://rest-service/external/openweathermap/data/2.5/weather?q=" + place + "&units=metric&APPID=" + appId )
+    "https://api.openweathermap.org/data/2.5/weather?q=" + place + "&units=metric&APPID=" + appId )
     .then(function({ data }) {
     // once request is successful, creating network devices with the data returned by the service
     var device = createDevice();
@@ -191,7 +193,7 @@ function sendRequest(network, location, value) {
 
   reportState.save({ status: "Pending" }, { patch: true });
 
-  axios("http://rest-service/external/openweathermap/data/2.5/weather?q=" + location + "&APPID=" + appId + "&units=metric")
+  axios("https://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=" + appId + "&units=metric")
     .then(function({ data }) {
     var timestamp = new Date().toISOString();
     networkInfo.device[0].value.forEach(function(val) {
